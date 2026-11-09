@@ -25,10 +25,12 @@ const forwardButton = document.getElementById("forwardButton");
 const fullscreenButton = document.getElementById("fullscreenButton");
 
 const storyScenes = document.querySelectorAll(".story-scene");
+const sceneVideos = document.querySelectorAll(".scene-video");
 const storyProgressFill = document.getElementById("storyProgressFill");
 
 let currentEpisode = 0;
 let introStarted = false;
+let activeSceneIndex = -1;
 
 const defaultEpisodes = [
   { title: "The Story — Part 1", description: "Meet the sisters and enter their world." },
@@ -136,6 +138,7 @@ document.getElementById("viewEpisodes").addEventListener("click", () => {
 document.querySelectorAll("[data-go-episodes]").forEach(button => {
   button.addEventListener("click", () => {
     stopAudio(episodeAudio);
+    pauseAllSceneVideos();
     playAudio(homeAudio);
     showPage("episodes");
   });
@@ -166,14 +169,63 @@ function createEpisodes() {
   });
 }
 
-// CINEMATIC SCENES
+// CINEMATIC VIDEO CONTROL
+
+function pauseAllSceneVideos() {
+  sceneVideos.forEach(video => {
+    video.pause();
+  });
+}
+
+function setActiveScene(index) {
+  if (index < 0 || index >= storyScenes.length) return;
+
+  storyScenes.forEach((scene, i) => {
+    scene.classList.toggle("active", i === index);
+  });
+
+  if (activeSceneIndex === index) {
+    if (!episodeAudio.paused) {
+      const activeVideo = sceneVideos[index];
+
+      if (activeVideo && activeVideo.paused) {
+        activeVideo.play().catch(error => {
+          console.log("Scene video playback blocked:", error);
+        });
+      }
+    }
+
+    return;
+  }
+
+  activeSceneIndex = index;
+
+  sceneVideos.forEach((video, i) => {
+    if (i === index) {
+      video.currentTime = 0;
+
+      if (!episodeAudio.paused) {
+        video.play().catch(error => {
+          console.log("Scene video playback blocked:", error);
+        });
+      }
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+}
 
 function resetStoryScenes() {
-  storyScenes.forEach((scene, index) => {
-    scene.classList.toggle("active", index === 0);
+  activeSceneIndex = -1;
+
+  storyScenes.forEach(scene => {
+    scene.classList.remove("active");
   });
 
   storyProgressFill.style.width = "0%";
+
+  setActiveScene(0);
 }
 
 function updateStoryScenes() {
@@ -186,14 +238,12 @@ function updateStoryScenes() {
     1
   );
 
-  let activeScene = Math.min(
+  const activeScene = Math.min(
     Math.floor(progress * storyScenes.length),
     storyScenes.length - 1
   );
 
-  storyScenes.forEach((scene, index) => {
-    scene.classList.toggle("active", index === activeScene);
-  });
+  setActiveScene(activeScene);
 
   storyProgressFill.style.width = `${progress * 100}%`;
 }
@@ -203,6 +253,7 @@ function updateStoryScenes() {
 function openEpisode(index) {
   stopAudio(homeAudio);
   stopAudio(episodeAudio);
+  pauseAllSceneVideos();
 
   currentEpisode = index;
 
@@ -234,15 +285,26 @@ episodeAudio.addEventListener("loadedmetadata", () => {
   resetStoryScenes();
 });
 
-episodeAudio.addEventListener("play", updatePlayButton);
-episodeAudio.addEventListener("pause", updatePlayButton);
+episodeAudio.addEventListener("play", () => {
+  updatePlayButton();
+
+  if (activeSceneIndex < 0) {
+    setActiveScene(0);
+  } else {
+    setActiveScene(activeSceneIndex);
+  }
+});
+
+episodeAudio.addEventListener("pause", () => {
+  updatePlayButton();
+  pauseAllSceneVideos();
+});
 
 episodeAudio.addEventListener("ended", () => {
   updatePlayButton();
   storyProgressFill.style.width = "100%";
-  storyScenes.forEach((scene, index) => {
-    scene.classList.toggle("active", index === storyScenes.length - 1);
-  });
+  setActiveScene(storyScenes.length - 1);
+  pauseAllSceneVideos();
 });
 
 // PLAYER CONTROLS
@@ -255,12 +317,14 @@ playPauseButton.addEventListener("click", () => {
   } else {
     episodeAudio.pause();
   }
-
-  updatePlayButton();
 });
 
 rewindButton.addEventListener("click", () => {
-  episodeAudio.currentTime = Math.max(0, episodeAudio.currentTime - 10);
+  episodeAudio.currentTime = Math.max(
+    0,
+    episodeAudio.currentTime - 10
+  );
+  updateStoryScenes();
 });
 
 forwardButton.addEventListener("click", () => {
@@ -269,6 +333,7 @@ forwardButton.addEventListener("click", () => {
       episodeAudio.duration,
       episodeAudio.currentTime + 10
     );
+    updateStoryScenes();
   }
 });
 
