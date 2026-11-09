@@ -24,13 +24,18 @@ const rewindButton = document.getElementById("rewindButton");
 const forwardButton = document.getElementById("forwardButton");
 const fullscreenButton = document.getElementById("fullscreenButton");
 
-const storyScenes = document.querySelectorAll(".story-scene");
-const sceneVideos = document.querySelectorAll(".scene-video");
+const storyStage = document.getElementById("storyStage");
 const storyProgressFill = document.getElementById("storyProgressFill");
 
+const allStoryScenes = document.querySelectorAll(".story-scene");
+const allSceneVideos = document.querySelectorAll(".scene-video");
+
 let currentEpisode = 0;
-let introStarted = false;
 let activeSceneIndex = -1;
+let introStarted = false;
+
+
+// EPISODE DATA
 
 const defaultEpisodes = [
   {
@@ -74,6 +79,21 @@ function getEpisodes() {
   return typeof episodes !== "undefined"
     ? episodes
     : defaultEpisodes;
+}
+
+
+// CURRENT EPISODE SCENES
+
+function getCurrentScenes() {
+  return storyStage.querySelectorAll(
+    `.story-scene[data-episode="${currentEpisode + 1}"]`
+  );
+}
+
+function getCurrentVideos() {
+  return Array.from(getCurrentScenes()).map(scene =>
+    scene.querySelector(".scene-video")
+  ).filter(Boolean);
 }
 
 
@@ -153,9 +173,7 @@ function enterWebsite() {
 }
 
 startButton.addEventListener("click", startIntro);
-
 skipButton.addEventListener("click", enterWebsite);
-
 introVideo.addEventListener("ended", enterWebsite);
 
 
@@ -250,27 +268,35 @@ function createEpisodes() {
 // CINEMATIC VIDEO CONTROL
 
 function pauseAllSceneVideos() {
-  sceneVideos.forEach(video => {
+  allSceneVideos.forEach(video => {
     video.pause();
   });
 }
 
-function setActiveScene(index) {
-  if (index < 0 || index >= storyScenes.length) return;
 
-  storyScenes.forEach((scene, i) => {
+function setActiveScene(index) {
+  const currentScenes = getCurrentScenes();
+  const currentVideos = getCurrentVideos();
+
+  if (index < 0 || index >= currentScenes.length) {
+    return;
+  }
+
+  currentScenes.forEach((scene, i) => {
     scene.classList.toggle("active", i === index);
   });
 
   if (activeSceneIndex === index) {
-    if (!episodeAudio.paused) {
-      const activeVideo = sceneVideos[index];
+    const activeVideo = currentVideos[index];
 
-      if (activeVideo && activeVideo.paused) {
-        activeVideo.play().catch(error => {
-          console.log("Scene video playback blocked:", error);
-        });
-      }
+    if (
+      activeVideo &&
+      !episodeAudio.paused &&
+      activeVideo.paused
+    ) {
+      activeVideo.play().catch(error => {
+        console.log("Scene video playback blocked:", error);
+      });
     }
 
     return;
@@ -278,7 +304,7 @@ function setActiveScene(index) {
 
   activeSceneIndex = index;
 
-  sceneVideos.forEach((video, i) => {
+  currentVideos.forEach((video, i) => {
     if (i === index) {
       video.currentTime = 0;
 
@@ -292,12 +318,25 @@ function setActiveScene(index) {
       video.currentTime = 0;
     }
   });
+
+  // Stop videos belonging to other episodes.
+  allStoryScenes.forEach(scene => {
+    if (scene.dataset.episode !== String(currentEpisode + 1)) {
+      const video = scene.querySelector(".scene-video");
+
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    }
+  });
 }
+
 
 function resetStoryScenes() {
   activeSceneIndex = -1;
 
-  storyScenes.forEach(scene => {
+  allStoryScenes.forEach(scene => {
     scene.classList.remove("active");
   });
 
@@ -305,6 +344,7 @@ function resetStoryScenes() {
 
   setActiveScene(0);
 }
+
 
 function updateStoryScenes() {
   if (
@@ -314,14 +354,18 @@ function updateStoryScenes() {
     return;
   }
 
+  const currentScenes = getCurrentScenes();
+
+  if (currentScenes.length === 0) return;
+
   const progress = Math.min(
     episodeAudio.currentTime / episodeAudio.duration,
     1
   );
 
   const activeScene = Math.min(
-    Math.floor(progress * storyScenes.length),
-    storyScenes.length - 1
+    Math.floor(progress * currentScenes.length),
+    currentScenes.length - 1
   );
 
   setActiveScene(activeScene);
@@ -334,6 +378,7 @@ function updateStoryScenes() {
 
 function openEpisode(index) {
   stopAudio(homeAudio);
+  stopAudio(seriesAudio);
   stopAudio(episodeAudio);
 
   pauseAllSceneVideos();
@@ -397,7 +442,11 @@ episodeAudio.addEventListener("ended", () => {
 
   storyProgressFill.style.width = "100%";
 
-  setActiveScene(storyScenes.length - 1);
+  const currentScenes = getCurrentScenes();
+
+  if (currentScenes.length > 0) {
+    setActiveScene(currentScenes.length - 1);
+  }
 
   pauseAllSceneVideos();
 });
