@@ -76,8 +76,7 @@ introVideo.addEventListener("ended", enterWebsite);
 // SERIES NAVIGATION
 
 function openSeries() {
-  stopAudio(homeAudio);
-  playAudio(seriesAudio);
+  playAudio(homeAudio);
   showPage("detail");
 }
 
@@ -100,14 +99,15 @@ document.querySelectorAll("[data-go-detail]").forEach(button => {
   });
 });
 
-document.getElementById("viewEpisodes").addEventListener("click", () => {
-  stopAudio(seriesAudio);
-  showPage("episodes");
-});
+document.getElementById("viewEpisodes")
+  .addEventListener("click", () => {
+    playAudio(homeAudio);
+    showPage("episodes");
+  });
 
 document.querySelectorAll("[data-go-episodes]").forEach(button => {
   button.addEventListener("click", () => {
-    stopAudio(seriesAudio);
+    playAudio(homeAudio);
     showPage("episodes");
   });
 });
@@ -154,6 +154,7 @@ function createEpisodes() {
 }
 
 function openEpisode(index) {
+  stopAudio(homeAudio);
   currentEpisode = index;
   const episode = getEpisodes()[index];
 
