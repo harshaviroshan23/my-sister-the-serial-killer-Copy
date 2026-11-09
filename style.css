@@ -871,6 +871,257 @@ button {
   }
 }
 
+/* =========================================
+   CINEMATIC VIDEO PLAYER - UPDATED
+========================================= */
+
+/* Main story stage */
+.story-stage {
+  position: relative;
+  width: 100%;
+  min-height: 490px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #080808;
+  border: 1px solid #333;
+  isolation: isolate;
+}
+
+/* Individual scenes */
+.story-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 55px;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  transition: opacity 1s ease, visibility 1s ease;
+  isolation: isolate;
+  background: #080808;
+}
+
+.story-scene.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Background video */
+.scene-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 1.2s ease, transform 8s ease;
+}
+
+.story-scene.active .scene-video {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* Hide old gradient backgrounds */
+.scene-atmosphere {
+  display: none;
+}
+
+/* Cinematic dark overlay */
+.story-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.88) 0%,
+      rgba(0, 0, 0, 0.45) 55%,
+      rgba(0, 0, 0, 0.12) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.9) 0%,
+      transparent 75%
+    );
+}
+
+/* Scene decoration */
+.scene-decoration {
+  position: absolute;
+  top: 12%;
+  right: 10%;
+  width: 190px;
+  height: 260px;
+  border: 1px solid #ffffff25;
+  border-radius: 100px 100px 10px 10px;
+  opacity: 0.5;
+  transform: rotate(8deg);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scene-decoration::before,
+.scene-decoration::after {
+  content: "";
+  position: absolute;
+  border: 1px solid #ffffff30;
+  border-radius: 50%;
+}
+
+.scene-decoration::before {
+  width: 120px;
+  height: 120px;
+  top: 30px;
+  left: 34px;
+}
+
+.scene-decoration::after {
+  width: 65px;
+  height: 65px;
+  bottom: 25px;
+  left: 62px;
+}
+
+/* Scene text */
+.scene-number {
+  position: relative;
+  z-index: 2;
+  color: #e50914;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  margin-bottom: 18px;
+}
+
+.scene-title {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  font-size: clamp(30px, 5vw, 58px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-shadow: 0 4px 20px #000;
+  animation: sceneTextIn 1s ease both;
+}
+
+.scene-description {
+  position: relative;
+  z-index: 2;
+  max-width: 550px;
+  color: #ddd;
+  font-size: 17px;
+  line-height: 1.7;
+  margin-top: 18px;
+  animation: sceneTextIn 1.3s ease both;
+}
+
+.scene-highlight {
+  color: #e50914;
+}
+
+/* Text entrance animation */
+@keyframes sceneTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Narration progress bar */
+.story-progress {
+  height: 4px;
+  width: 100%;
+  background: #ffffff30;
+  margin-top: 18px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.story-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #e50914;
+  transition: width 0.2s linear;
+}
+
+/* Player controls */
+.player-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.player-controls button {
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.player-controls button:hover {
+  background: #e50914;
+  transform: scale(1.05);
+}
+
+/* Fullscreen presentation */
+.player-page:fullscreen {
+  background: #090909;
+  overflow-y: auto;
+  padding: 30px;
+}
+
+.player-page:fullscreen .player-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.player-page:fullscreen .story-stage {
+  min-height: 65vh;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .story-stage {
+    min-height: 400px;
+  }
+
+  .story-scene {
+    padding: 25px;
+  }
+
+  .scene-title {
+    font-size: 32px;
+  }
+
+  .scene-description {
+    font-size: 14px;
+  }
+
+  .scene-decoration {
+    right: 5%;
+    width: 120px;
+    height: 170px;
+  }
+
+  .player-controls {
+    gap: 8px;
+  }
+}
+
   .player-content {
     margin-top: 20px;
   }
