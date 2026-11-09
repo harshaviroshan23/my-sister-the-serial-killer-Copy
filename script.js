@@ -222,3 +222,23 @@ episodeAudio.addEventListener("pause", updatePlayButton);
 episodeAudio.addEventListener("ended", updatePlayButton);
 
 createEpisodes();
+
+const fullscreenButton = document.getElementById("fullscreenButton");
+
+fullscreenButton.addEventListener("click", async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.getElementById("playerPage").requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (error) {
+    console.error("Fullscreen error:", error);
+  }
+});
+
+document.addEventListener("fullscreenchange", () => {
+  fullscreenButton.textContent = document.fullscreenElement
+    ? "⛶ Exit Fullscreen"
+    : "⛶ Fullscreen";
+});
