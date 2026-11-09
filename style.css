@@ -148,7 +148,7 @@ button {
   min-height: 740px;
   height: 92vh;
   position: relative;
-  background-image: url('assets/hero-background.png');
+  background-image: url('assets/Wide%20cinematic%20background.png');
   background-size: cover;
   background-position: center 35%;
   display: flex;
@@ -372,7 +372,7 @@ button {
 .detail-bg {
   position: absolute;
   inset: 0;
-  background: url('assets/hero-background.png') center/cover;
+  background: url('assets/Wide%20cinematic%20background.png') center/cover;
   filter: brightness(0.65);
 }
 
