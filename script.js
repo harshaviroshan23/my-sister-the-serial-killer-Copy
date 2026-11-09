@@ -220,7 +220,41 @@ forwardButton.addEventListener("click", () => {
 episodeAudio.addEventListener("play", updatePlayButton);
 episodeAudio.addEventListener("pause", updatePlayButton);
 episodeAudio.addEventListener("ended", updatePlayButton);
+// CINEMATIC SCENE TRANSITIONS
 
+const storyScenes = document.querySelectorAll(".story-scene");
+const storyProgressFill = document.getElementById("storyProgressFill");
+
+function updateStoryScenes() {
+  if (!episodeAudio.duration || !Number.isFinite(episodeAudio.duration)) return;
+
+  const progress = episodeAudio.currentTime / episodeAudio.duration;
+
+  let activeScene = 0;
+
+  if (progress >= 0.75) {
+    activeScene = 3;
+  } else if (progress >= 0.50) {
+    activeScene = 2;
+  } else if (progress >= 0.25) {
+    activeScene = 1;
+  }
+
+  storyScenes.forEach((scene, index) => {
+    scene.classList.toggle("active", index === activeScene);
+  });
+
+  storyProgressFill.style.width = `${progress * 100}%`;
+}
+
+episodeAudio.addEventListener("timeupdate", updateStoryScenes);
+
+episodeAudio.addEventListener("loadedmetadata", () => {
+  storyProgressFill.style.width = "0%";
+  storyScenes.forEach((scene, index) => {
+    scene.classList.toggle("active", index === 0);
+  });
+});
 createEpisodes();
 
 const fullscreenButton = document.getElementById("fullscreenButton");
