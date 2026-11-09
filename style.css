@@ -836,3 +836,210 @@ button {
   outline: 2px solid white;
   outline-offset: 4px;
 }
+
+/* =================================
+   NETFLIX HOMEPAGE CONTENT ROWS
+================================= */
+
+.home-rows {
+  position: relative;
+  z-index: 3;
+  padding: 20px 4% 50px;
+  background: #090909;
+}
+
+.content-row {
+  margin-bottom: 38px;
+}
+
+.content-row h2 {
+  color: #fff;
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.movie-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 3px 18px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.movie-list::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  position: relative;
+  flex: 0 0 190px;
+  height: 115px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  isolation: isolate;
+  cursor: default;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #252525;
+}
+
+.movie-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.95),
+      rgba(0, 0, 0, 0.05)
+    );
+}
+
+.movie-card span {
+  color: white;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 5px #000;
+}
+
+.movie-card:hover {
+  transform: scale(1.07);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+  z-index: 5;
+}
+
+/* POSTER BACKGROUNDS */
+
+.poster-one {
+  background: linear-gradient(135deg, #172d52, #8b1d36, #090909);
+}
+
+.poster-two {
+  background: linear-gradient(135deg, #172b37, #47718b, #101010);
+}
+
+.poster-three {
+  background: linear-gradient(135deg, #19152e, #58345e, #080808);
+}
+
+.poster-four {
+  background: linear-gradient(135deg, #8d2b32, #24151b, #080808);
+}
+
+.poster-five {
+  background: linear-gradient(135deg, #122e3b, #315b5b, #080808);
+}
+
+.poster-six {
+  background: linear-gradient(135deg, #8c1720, #351016, #080808);
+}
+
+.poster-seven {
+  background: linear-gradient(135deg, #355a37, #17221c, #080808);
+}
+
+.poster-eight {
+  background: linear-gradient(135deg, #643b70, #25172f, #080808);
+}
+
+.poster-nine {
+  background: linear-gradient(135deg, #73322d, #231516, #080808);
+}
+
+.poster-ten {
+  background: linear-gradient(135deg, #303030, #5b2020, #080808);
+}
+
+.poster-eleven {
+  background: linear-gradient(135deg, #493c2e, #191919, #080808);
+}
+
+.poster-twelve {
+  background: linear-gradient(135deg, #263e55, #18202d, #080808);
+}
+
+.poster-thirteen {
+  background: linear-gradient(135deg, #4a2635, #21151d, #080808);
+}
+
+.poster-fourteen {
+  background: linear-gradient(135deg, #732c2c, #241414, #080808);
+}
+
+.poster-fifteen {
+  background: linear-gradient(135deg, #394c54, #172126, #080808);
+}
+
+.poster-sixteen {
+  background: linear-gradient(135deg, #8d1720, #4a1018, #090909);
+  border: 1px solid #e50914;
+}
+
+.poster-seventeen {
+  background: linear-gradient(135deg, #273e59, #17202d, #080808);
+}
+
+.poster-eighteen {
+  background: linear-gradient(135deg, #51375d, #21162c, #080808);
+}
+
+.poster-nineteen {
+  background: linear-gradient(135deg, #71321d, #29130d, #080808);
+}
+
+.poster-twenty {
+  background: linear-gradient(135deg, #343b52, #191c28, #080808);
+}
+
+.poster-twentyone {
+  background: linear-gradient(135deg, #35534d, #17251f, #080808);
+}
+
+.poster-twentytwo {
+  background: linear-gradient(135deg, #443d57, #1d1929, #080808);
+}
+
+.poster-twentythree {
+  background: linear-gradient(135deg, #5c3030, #241515, #080808);
+}
+
+.poster-twentyfour {
+  background: linear-gradient(135deg, #25485d, #14202a, #080808);
+}
+
+/* HOMEPAGE RESPONSIVE DESIGN */
+
+@media (max-width: 768px) {
+  .home-rows {
+    padding: 15px 4% 35px;
+  }
+
+  .content-row h2 {
+    font-size: 18px;
+  }
+
+  .movie-card {
+    flex-basis: 145px;
+    height: 95px;
+  }
+
+  .movie-card span {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-card {
+    flex-basis: 125px;
+    height: 85px;
+  }
+}
