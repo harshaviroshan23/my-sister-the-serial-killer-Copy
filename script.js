@@ -10,18 +10,18 @@ const intro = document.getElementById("intro");
 const app = document.getElementById("app");
 const introVideo = document.getElementById("introVideo");
 
+const startButton = document.getElementById("startExperience");
+const skipButton = document.getElementById("skipIntro");
+
 const homeAudio = document.getElementById("homeAudio");
 const seriesAudio = document.getElementById("seriesAudio");
 
 let currentEpisode = 0;
+let introStarted = false;
 
 function showPage(pageName) {
-  Object.values(pages).forEach(page => {
-    page.classList.add("hidden");
-  });
-
+  Object.values(pages).forEach(page => page.classList.add("hidden"));
   pages[pageName].classList.remove("hidden");
-
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -32,29 +32,46 @@ function stopAudio(audio) {
 
 function playAudio(audio) {
   audio.play().catch(() => {
-    console.log("Audio requires user interaction.");
+    console.log("Audio playback requires interaction.");
   });
 }
 
 // INTRO
 
+async function startIntro() {
+  if (introStarted) return;
+
+  introStarted = true;
+  startButton.style.display = "none";
+  skipButton.style.display = "block";
+
+  introVideo.currentTime = 0;
+  introVideo.muted = false;
+
+  try {
+    await introVideo.play();
+  } catch (error) {
+    console.error("Intro playback failed:", error);
+    startButton.style.display = "block";
+    introStarted = false;
+  }
+}
+
 function enterWebsite() {
+  introVideo.pause();
+  stopAudio(seriesAudio);
+
   intro.classList.add("hidden");
   app.classList.remove("hidden");
 
-  playAudio(homeAudio);
   showPage("home");
+  playAudio(homeAudio);
 }
 
-document.getElementById("startExperience")
-  .addEventListener("click", enterWebsite);
+startButton.addEventListener("click", startIntro);
+skipButton.addEventListener("click", enterWebsite);
 
-document.getElementById("skipIntro")
-  .addEventListener("click", enterWebsite);
-
-introVideo.addEventListener("ended", () => {
-  document.getElementById("startExperience").style.display = "block";
-});
+introVideo.addEventListener("ended", enterWebsite);
 
 // SERIES NAVIGATION
 
@@ -77,14 +94,22 @@ document.querySelectorAll("[data-go-home]").forEach(button => {
 });
 
 document.querySelectorAll("[data-go-detail]").forEach(button => {
-  button.addEventListener("click", () => showPage("detail"));
+  button.addEventListener("click", () => {
+    playAudio(seriesAudio);
+    showPage("detail");
+  });
 });
 
-document.getElementById("viewEpisodes")
-  .addEventListener("click", () => showPage("episodes"));
+document.getElementById("viewEpisodes").addEventListener("click", () => {
+  stopAudio(seriesAudio);
+  showPage("episodes");
+});
 
 document.querySelectorAll("[data-go-episodes]").forEach(button => {
-  button.addEventListener("click", () => showPage("episodes"));
+  button.addEventListener("click", () => {
+    stopAudio(seriesAudio);
+    showPage("episodes");
+  });
 });
 
 // EPISODES
@@ -92,40 +117,17 @@ document.querySelectorAll("[data-go-episodes]").forEach(button => {
 const episodeGrid = document.getElementById("episodeGrid");
 
 const defaultEpisodes = [
-  {
-    title: "The Story — Part 1",
-    description: "Meet the sisters and enter their world."
-  },
-  {
-    title: "The Story — Part 2",
-    description: "The story continues."
-  },
-  {
-    title: "The Story — Part 3",
-    description: "Discover what happens next."
-  },
-  {
-    title: "The Climax",
-    description: "The turning point of the story."
-  },
-  {
-    title: "How It Should Have Ended",
-    description: "An alternative ending."
-  },
-  {
-    title: "My Feedback",
-    description: "My personal thoughts about the book."
-  },
-  {
-    title: "The Team",
-    description: "Meet the people behind this presentation."
-  }
+  { title: "The Story — Part 1", description: "Meet the sisters and enter their world." },
+  { title: "The Story — Part 2", description: "The story continues." },
+  { title: "The Story — Part 3", description: "Discover what happens next." },
+  { title: "The Climax", description: "The turning point of the story." },
+  { title: "How It Should Have Ended", description: "An alternative ending." },
+  { title: "My Feedback", description: "My personal thoughts about the book." },
+  { title: "The Team", description: "Meet the people behind this presentation." }
 ];
 
 function getEpisodes() {
-  return typeof episodes !== "undefined"
-    ? episodes
-    : defaultEpisodes;
+  return typeof episodes !== "undefined" ? episodes : defaultEpisodes;
 }
 
 function createEpisodes() {
@@ -133,52 +135,35 @@ function createEpisodes() {
 
   getEpisodes().forEach((episode, index) => {
     const card = document.createElement("article");
-
     card.className = "episode-card";
 
     card.innerHTML = `
-      <div class="episode-thumbnail">
-        ▶
-      </div>
-
+      <div class="episode-thumbnail">▶</div>
       <div class="episode-info">
         <div class="episode-number">
           EPISODE ${String(index + 1).padStart(2, "0")}
         </div>
-
         <h3>${episode.title}</h3>
-
         <p>${episode.description}</p>
       </div>
     `;
 
-    card.addEventListener("click", () => {
-      openEpisode(index);
-    });
-
+    card.addEventListener("click", () => openEpisode(index));
     episodeGrid.appendChild(card);
   });
 }
 
 function openEpisode(index) {
   currentEpisode = index;
-
   const episode = getEpisodes()[index];
 
   document.getElementById("playerEpisodeNumber").textContent =
     `EPISODE ${String(index + 1).padStart(2, "0")}`;
 
-  document.getElementById("playerTitle").textContent =
-    episode.title;
-
-  document.getElementById("playerDescription").textContent =
-    episode.description;
+  document.getElementById("playerTitle").textContent = episode.title;
+  document.getElementById("playerDescription").textContent = episode.description;
 
   showPage("player");
 }
 
 createEpisodes();
-
-// INITIAL STATE
-
-showPage("home");
