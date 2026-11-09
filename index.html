@@ -5,25 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090909">
+
   <title>My Sister, the Serial Killer</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <!-- OPENING INTRO -->
-  <div id="intro" class="intro-screen">
+  <!-- INTRO SCREEN -->
+  <section id="intro" class="intro-screen">
+
     <video id="introVideo" class="intro-video" playsinline preload="auto">
       <source src="assets/intro%20logo.mp4?v=2" type="video/mp4">
     </video>
 
-    <button id="startExperience" class="start-experience">
-      ENTER EXPERIENCE
-    </button>
+    <div class="intro-overlay">
+      <button id="startExperience" class="start-experience">
+        PLAY EXPERIENCE
+      </button>
 
-    <button id="skipIntro" class="skip-intro">Skip intro</button>
-  </div>
+      <button id="skipIntro" class="skip-intro">
+        SKIP INTRO
+      </button>
+    </div>
 
-  <!-- BACKGROUND MUSIC -->
+  </section>
+
+
+  <!-- BACKGROUND AUDIO -->
   <audio id="homeAudio" loop>
     <source src="assets/Hompage%20theme.mpeg" type="audio/mpeg">
   </audio>
@@ -32,189 +42,165 @@
     <source src="assets/Series%20detail%20page.mp3" type="audio/mpeg">
   </audio>
 
+
+  <!-- MAIN WEBSITE -->
   <main id="app" class="app hidden">
 
-    <!-- NETFLIX HOMEPAGE -->
+
+    <!-- HOMEPAGE -->
     <section id="homePage" class="page home-page">
 
-      <header class="top-nav">
-        <a class="brand" href="#home">NETFLIX</a>
+      <nav class="navbar">
+        <div class="brand">NETFLIX</div>
 
-        <nav class="nav-links">
-          <span class="active">Home</span>
-          <span>TV Shows</span>
-          <span>Movies</span>
-          <span>New & Popular</span>
-          <span>My List</span>
-        </nav>
-
-        <div class="nav-right">
-          <span class="search-mark">⌕</span>
-          <span class="profile-dot">H</span>
+        <div class="nav-links">
+          <button data-go-home>Home</button>
+          <button data-open-series>Explore</button>
         </div>
-      </header>
+      </nav>
 
       <div class="hero">
-        <div class="hero-shade"></div>
 
         <div class="hero-content">
 
-          <div class="series-kicker">
-            <span class="n-mark">N</span>
-            <span>S E R I E S</span>
-          </div>
-
-          <p class="top-ten">#1 IN BOOKS & STORIES TODAY</p>
-
-          <h1 class="hero-title">
-            MY SISTER,<br>THE SERIAL KILLER
-          </h1>
-
-          <p class="hero-description">
-            Two sisters. One dangerous secret.
-            A story where family loyalty meets an unsettling truth.
-          </p>
-
-          <div class="hero-actions">
-            <button class="btn btn-light" data-open-series>
-              ▶ Play
-            </button>
-
-            <button class="btn btn-muted" data-open-series>
-              ⓘ More Info
-            </button>
-          </div>
-
-          <p class="hero-meta">
-            A NOVEL BY OYINKAN BRAITHWAITE · THRILLER
-          </p>
-
-        </div>
-
-        <div class="hero-age">A CINEMATIC BOOK EXPERIENCE</div>
-      </div>
-
-      <!-- DECORATIVE MOVIE ROWS -->
-      <div class="catalogue">
-
-        <h2>Popular on Netflix</h2>
-
-        <div class="poster-row">
-          <div class="fake-poster poster-one"><b>LOCKE & KEY</b></div>
-          <div class="fake-poster poster-two"><b>THE WATCHER</b></div>
-          <div class="fake-poster poster-three"><b>THE GOOD DOCTOR</b></div>
-          <div class="fake-poster poster-four"><b>TRAINWRECK</b></div>
-          <div class="fake-poster poster-five"><b>RESIDENT EVIL</b></div>
-          <div class="fake-poster poster-six"><b>BEHIND HER EYES</b></div>
-        </div>
-
-        <h2>Thrillers & Mysteries</h2>
-
-        <div class="poster-row">
-          <div class="fake-poster poster-seven"><b>THE SILENCE</b></div>
-          <div class="fake-poster poster-eight"><b>BLACK WATER</b></div>
-          <div class="fake-poster poster-nine"><b>HIDDEN TRUTH</b></div>
-          <div class="fake-poster poster-ten"><b>NO ESCAPE</b></div>
-          <div class="fake-poster poster-eleven"><b>THE PERFECT LIE</b></div>
-          <div class="fake-poster poster-twelve"><b>AFTER MIDNIGHT</b></div>
-        </div>
-
-        <p class="footer-note">
-          Student-created interactive book presentation.
-          Not affiliated with Netflix.
-        </p>
-
-      </div>
-    </section>
-
-    <!-- SERIES DETAILS -->
-    <section id="detailPage" class="page detail-page hidden">
-
-      <button class="back-button" data-go-home>‹ Home</button>
-
-      <div class="detail-hero">
-        <div class="detail-bg"></div>
-        <div class="detail-overlay"></div>
-
-        <div class="detail-copy">
-
-          <div class="series-kicker">
-            <span class="n-mark">N</span>
-            <span>S E R I E S</span>
-          </div>
+          <p class="eyebrow">A CINEMATIC BOOK EXPERIENCE</p>
 
           <h1>MY SISTER,<br>THE SERIAL KILLER</h1>
 
-          <p class="detail-facts">
-            <span class="match">98% Match</span>
-            <span>2026</span>
-            <span>7 Episodes</span>
+          <p class="hero-description">
+            Two sisters. One dangerous secret.
+            A story where loyalty comes at a price.
           </p>
 
-          <p class="detail-description">
-            A darkly comic thriller about sisterhood,
-            secrets and the dangerous lengths we go to for family.
-          </p>
-
-          <div class="hero-actions">
-            <button class="btn btn-light" id="viewEpisodes">
-              ▶ View Episodes
-            </button>
-
-            <button class="btn btn-muted" data-go-home>
-              ‹ Back
-            </button>
-          </div>
-
-          <p>Based on the novel by <b>Oyinkan Braithwaite</b></p>
+          <button class="primary-button" data-open-series>
+            ▶ EXPLORE THE STORY
+          </button>
 
         </div>
+
       </div>
 
-      <div class="detail-lower">
-        <h2>About this series</h2>
-        <p>
-          Seven chapters. One unforgettable story.
-          Explore the novel through a cinematic presentation.
-        </p>
+      <div class="home-bottom">
+        <p>A PRESENTATION BY HARSHA VIROSHAN</p>
       </div>
 
     </section>
 
-    <!-- EPISODE SELECTION -->
+
+
+    <!-- BOOK DETAILS PAGE -->
+    <section id="detailPage" class="page detail-page hidden">
+
+      <div class="detail-bg"></div>
+
+      <nav class="navbar">
+        <div class="brand">NETFLIX</div>
+
+        <button class="back-button" data-go-home>
+          ‹ Home
+        </button>
+      </nav>
+
+      <div class="detail-content">
+
+        <div class="detail-poster">
+          <img
+            src="assets/vertical%20poster.jpg"
+            alt="My Sister, the Serial Killer book poster"
+          >
+        </div>
+
+        <div class="detail-info">
+
+          <p class="eyebrow">NETFLIX PRESENTS</p>
+
+          <h1>MY SISTER,<br>THE SERIAL KILLER</h1>
+
+          <div class="book-meta">
+            <span>2018</span>
+            <span>Psychological Thriller</span>
+            <span>7 Episodes</span>
+          </div>
+
+          <p class="detail-description">
+            My Sister, the Serial Killer is a darkly humorous
+            psychological thriller written by Oyinkan Braithwaite.
+
+            Set in Lagos, Nigeria, the story follows two sisters,
+            Korede and Ayoola, whose lives are connected by a
+            secret that becomes increasingly difficult to hide.
+          </p>
+
+          <p class="detail-author">
+            Written by <strong>Oyinkan Braithwaite</strong>
+          </p>
+
+          <button id="viewEpisodes" class="primary-button">
+            ▶ VIEW EPISODES
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- EPISODES PAGE -->
     <section id="episodesPage" class="page episodes-page hidden">
 
-      <header class="simple-header">
+      <nav class="navbar">
+
         <button class="back-button" data-go-detail>
-          ‹ Series details
+          ‹ Back
         </button>
 
-        <span class="brand small-brand">NETFLIX</span>
-      </header>
+        <div class="brand">NETFLIX</div>
 
-      <div class="episodes-heading">
-        <p class="eyebrow">NETFLIX PRESENTS</p>
-        <h1>MY SISTER, THE SERIAL KILLER</h1>
-        <p>Choose an episode to begin.</p>
+        <button data-go-home>
+          Home
+        </button>
+
+      </nav>
+
+      <div class="episodes-content">
+
+        <p class="eyebrow">THE COMPLETE EXPERIENCE</p>
+
+        <h1>Episodes</h1>
+
+        <p class="episodes-subtitle">
+          Explore the story, its characters and the ideas behind the book.
+        </p>
+
+        <div id="episodeGrid" class="episode-grid">
+          <!-- Episode cards are generated by episodes.js and script.js -->
+        </div>
+
       </div>
-
-      <div id="episodeGrid" class="episode-grid"></div>
 
     </section>
 
-    <!-- EPISODE PLAYER -->
+
+
+    <!-- CINEMATIC EPISODE PLAYER -->
     <section id="playerPage" class="page player-page hidden">
 
       <header class="player-header">
+
         <button class="back-button" data-go-episodes>
           ‹ All Episodes
         </button>
 
         <span class="brand small-brand">NETFLIX</span>
+
       </header>
+
 
       <!-- EPISODE NARRATION -->
       <audio id="episodeAudio" preload="auto"></audio>
+
 
       <div class="player-content">
 
@@ -222,26 +208,38 @@
           EPISODE 01
         </p>
 
-        <h1 id="playerTitle">The Story — Part 1</h1>
+        <h1 id="playerTitle">
+          The Story — Part 1
+        </h1>
 
         <p id="playerDescription" class="player-description">
-          Your story will appear here.
+          The beginning of the story.
         </p>
 
-        <!-- CINEMATIC STORY STAGE -->
+
+        <!-- CINEMATIC VIDEO STAGE -->
         <div class="story-stage" id="storyStage">
 
-          <!-- SCENE 1: THE OPENING -->
+
+          <!-- SCENE 1: INTRODUCTION -->
           <div class="story-scene scene-one active">
 
-            <video class="scene-video" muted playsinline loop preload="metadata">
+            <video
+              class="scene-video"
+              muted
+              playsinline
+              loop
+              preload="metadata"
+            >
               <source src="assets/scene1.mp4" type="video/mp4">
             </video>
 
             <div class="scene-atmosphere"></div>
             <div class="scene-decoration"></div>
 
-            <p class="scene-number">01 — THE BEGINNING</p>
+            <p class="scene-number">
+              01 — INTRODUCTION
+            </p>
 
             <h2 class="scene-title">
               Imagine having a sister who seems perfect.
@@ -254,17 +252,27 @@
 
           </div>
 
-          <!-- SCENE 2: THE SISTERS -->
+
+
+          <!-- SCENE 2: THE MAIN CHARACTERS -->
           <div class="story-scene scene-two">
 
-            <video class="scene-video" muted playsinline loop preload="metadata">
+            <video
+              class="scene-video"
+              muted
+              playsinline
+              loop
+              preload="metadata"
+            >
               <source src="assets/scene2.mp4" type="video/mp4">
             </video>
 
             <div class="scene-atmosphere"></div>
             <div class="scene-decoration"></div>
 
-            <p class="scene-number">02 — TWO SISTERS</p>
+            <p class="scene-number">
+              02 — THE MAIN CHARACTERS
+            </p>
 
             <h2 class="scene-title">
               Korede <span class="scene-highlight">&</span> Ayoola
@@ -278,17 +286,27 @@
 
           </div>
 
+
+
           <!-- SCENE 3: THE SECRET -->
           <div class="story-scene scene-three">
 
-            <video class="scene-video" muted playsinline loop preload="metadata">
+            <video
+              class="scene-video"
+              muted
+              playsinline
+              loop
+              preload="metadata"
+            >
               <source src="assets/scene3.mp4" type="video/mp4">
             </video>
 
             <div class="scene-atmosphere"></div>
             <div class="scene-decoration"></div>
 
-            <p class="scene-number">03 — A DANGEROUS SECRET</p>
+            <p class="scene-number">
+              03 — THE SECRET
+            </p>
 
             <h2 class="scene-title">
               One secret. Two sisters.
@@ -301,17 +319,27 @@
 
           </div>
 
-          <!-- SCENE 4: FEMI -->
+
+
+          <!-- SCENE 4: THE TURNING POINT -->
           <div class="story-scene scene-four">
 
-            <video class="scene-video" muted playsinline loop preload="metadata">
+            <video
+              class="scene-video"
+              muted
+              playsinline
+              loop
+              preload="metadata"
+            >
               <source src="assets/scene4.mp4" type="video/mp4">
             </video>
 
             <div class="scene-atmosphere"></div>
             <div class="scene-decoration"></div>
 
-            <p class="scene-number">04 — THE THIRD MAN</p>
+            <p class="scene-number">
+              04 — THE TURNING POINT
+            </p>
 
             <h2 class="scene-title">
               His name was Femi.
@@ -324,12 +352,20 @@
 
           </div>
 
+
         </div>
 
-        <!-- NARRATION PROGRESS BAR -->
+
+        <!-- STORY PROGRESS -->
         <div class="story-progress">
-          <div class="story-progress-fill" id="storyProgressFill"></div>
+
+          <div
+            class="story-progress-fill"
+            id="storyProgressFill"
+          ></div>
+
         </div>
+
 
         <!-- PLAYER CONTROLS -->
         <div class="player-controls">
@@ -338,20 +374,29 @@
             ⛶ Fullscreen
           </button>
 
-          <button id="rewindButton">↶ 10</button>
+          <button id="rewindButton">
+            ↶ 10
+          </button>
 
-          <button id="playPauseButton">▶</button>
+          <button id="playPauseButton">
+            ▶
+          </button>
 
-          <button id="forwardButton">↷ 10</button>
+          <button id="forwardButton">
+            ↷ 10
+          </button>
 
         </div>
 
       </div>
+
     </section>
+
 
   </main>
 
-  <!-- JAVASCRIPT -->
+
+  <!-- JAVASCRIPT FILES -->
   <script src="episodes.js"></script>
   <script src="script.js"></script>
 
