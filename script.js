@@ -17,8 +17,32 @@ const homeAudio = document.getElementById("homeAudio");
 const seriesAudio = document.getElementById("seriesAudio");
 const episodeAudio = document.getElementById("episodeAudio");
 
+const episodeGrid = document.getElementById("episodeGrid");
+
+const playPauseButton = document.getElementById("playPauseButton");
+const rewindButton = document.getElementById("rewindButton");
+const forwardButton = document.getElementById("forwardButton");
+const fullscreenButton = document.getElementById("fullscreenButton");
+
+const storyScenes = document.querySelectorAll(".story-scene");
+const storyProgressFill = document.getElementById("storyProgressFill");
+
 let currentEpisode = 0;
 let introStarted = false;
+
+const defaultEpisodes = [
+  { title: "The Story — Part 1", description: "Meet the sisters and enter their world." },
+  { title: "The Story — Part 2", description: "The story continues." },
+  { title: "The Story — Part 3", description: "Discover what happens next." },
+  { title: "The Climax", description: "The turning point of the story." },
+  { title: "How It Should Have Ended", description: "An alternative ending." },
+  { title: "My Feedback", description: "My personal thoughts about the book." },
+  { title: "The Team", description: "Meet the people behind this presentation." }
+];
+
+function getEpisodes() {
+  return typeof episodes !== "undefined" ? episodes : defaultEpisodes;
+}
 
 function showPage(pageName) {
   Object.values(pages).forEach(page => page.classList.add("hidden"));
@@ -32,9 +56,13 @@ function stopAudio(audio) {
 }
 
 function playAudio(audio) {
-  audio.play().catch(() => {
-    console.log("Audio playback requires interaction.");
+  audio.play().catch(error => {
+    console.log("Audio playback requires interaction.", error);
   });
+}
+
+function updatePlayButton() {
+  playPauseButton.textContent = episodeAudio.paused ? "▶" : "❚❚";
 }
 
 // INTRO
@@ -73,7 +101,7 @@ startButton.addEventListener("click", startIntro);
 skipButton.addEventListener("click", enterWebsite);
 introVideo.addEventListener("ended", enterWebsite);
 
-// SERIES NAVIGATION
+// NAVIGATION
 
 function openSeries() {
   playAudio(homeAudio);
@@ -100,11 +128,10 @@ document.querySelectorAll("[data-go-detail]").forEach(button => {
   });
 });
 
-document.getElementById("viewEpisodes")
-  .addEventListener("click", () => {
-    playAudio(homeAudio);
-    showPage("episodes");
-  });
+document.getElementById("viewEpisodes").addEventListener("click", () => {
+  playAudio(homeAudio);
+  showPage("episodes");
+});
 
 document.querySelectorAll("[data-go-episodes]").forEach(button => {
   button.addEventListener("click", () => {
@@ -114,23 +141,7 @@ document.querySelectorAll("[data-go-episodes]").forEach(button => {
   });
 });
 
-// EPISODES
-
-const episodeGrid = document.getElementById("episodeGrid");
-
-const defaultEpisodes = [
-  { title: "The Story — Part 1", description: "Meet the sisters and enter their world." },
-  { title: "The Story — Part 2", description: "The story continues." },
-  { title: "The Story — Part 3", description: "Discover what happens next." },
-  { title: "The Climax", description: "The turning point of the story." },
-  { title: "How It Should Have Ended", description: "An alternative ending." },
-  { title: "My Feedback", description: "My personal thoughts about the book." },
-  { title: "The Team", description: "The people behind this presentation." }
-];
-
-function getEpisodes() {
-  return typeof episodes !== "undefined" ? episodes : defaultEpisodes;
-}
+// EPISODE CARDS
 
 function createEpisodes() {
   episodeGrid.innerHTML = "";
@@ -155,13 +166,46 @@ function createEpisodes() {
   });
 }
 
-// OPEN EPISODE AND PLAY NARRATION
+// CINEMATIC SCENES
+
+function resetStoryScenes() {
+  storyScenes.forEach((scene, index) => {
+    scene.classList.toggle("active", index === 0);
+  });
+
+  storyProgressFill.style.width = "0%";
+}
+
+function updateStoryScenes() {
+  if (!Number.isFinite(episodeAudio.duration) || episodeAudio.duration <= 0) {
+    return;
+  }
+
+  const progress = Math.min(
+    episodeAudio.currentTime / episodeAudio.duration,
+    1
+  );
+
+  let activeScene = Math.min(
+    Math.floor(progress * storyScenes.length),
+    storyScenes.length - 1
+  );
+
+  storyScenes.forEach((scene, index) => {
+    scene.classList.toggle("active", index === activeScene);
+  });
+
+  storyProgressFill.style.width = `${progress * 100}%`;
+}
+
+// OPEN EPISODES
 
 function openEpisode(index) {
   stopAudio(homeAudio);
   stopAudio(episodeAudio);
 
   currentEpisode = index;
+
   const episode = getEpisodes()[index];
 
   document.getElementById("playerEpisodeNumber").textContent =
@@ -170,27 +214,38 @@ function openEpisode(index) {
   document.getElementById("playerTitle").textContent = episode.title;
   document.getElementById("playerDescription").textContent = episode.description;
 
+  resetStoryScenes();
   showPage("player");
 
   if (episode.audio) {
     episodeAudio.src = episode.audio;
     episodeAudio.load();
-
     playAudio(episodeAudio);
   }
 
   updatePlayButton();
 }
 
+// AUDIO EVENTS
+
+episodeAudio.addEventListener("timeupdate", updateStoryScenes);
+
+episodeAudio.addEventListener("loadedmetadata", () => {
+  resetStoryScenes();
+});
+
+episodeAudio.addEventListener("play", updatePlayButton);
+episodeAudio.addEventListener("pause", updatePlayButton);
+
+episodeAudio.addEventListener("ended", () => {
+  updatePlayButton();
+  storyProgressFill.style.width = "100%";
+  storyScenes.forEach((scene, index) => {
+    scene.classList.toggle("active", index === storyScenes.length - 1);
+  });
+});
+
 // PLAYER CONTROLS
-
-const playPauseButton = document.getElementById("playPauseButton");
-const rewindButton = document.getElementById("rewindButton");
-const forwardButton = document.getElementById("forwardButton");
-
-function updatePlayButton() {
-  playPauseButton.textContent = episodeAudio.paused ? "▶" : "❚❚";
-}
 
 playPauseButton.addEventListener("click", () => {
   if (!episodeAudio.src) return;
@@ -217,52 +272,12 @@ forwardButton.addEventListener("click", () => {
   }
 });
 
-episodeAudio.addEventListener("play", updatePlayButton);
-episodeAudio.addEventListener("pause", updatePlayButton);
-episodeAudio.addEventListener("ended", updatePlayButton);
-// CINEMATIC SCENE TRANSITIONS
-
-const storyScenes = document.querySelectorAll(".story-scene");
-const storyProgressFill = document.getElementById("storyProgressFill");
-
-function updateStoryScenes() {
-  if (!episodeAudio.duration || !Number.isFinite(episodeAudio.duration)) return;
-
-  const progress = episodeAudio.currentTime / episodeAudio.duration;
-
-  let activeScene = 0;
-
-  if (progress >= 0.75) {
-    activeScene = 3;
-  } else if (progress >= 0.50) {
-    activeScene = 2;
-  } else if (progress >= 0.25) {
-    activeScene = 1;
-  }
-
-  storyScenes.forEach((scene, index) => {
-    scene.classList.toggle("active", index === activeScene);
-  });
-
-  storyProgressFill.style.width = `${progress * 100}%`;
-}
-
-episodeAudio.addEventListener("timeupdate", updateStoryScenes);
-
-episodeAudio.addEventListener("loadedmetadata", () => {
-  storyProgressFill.style.width = "0%";
-  storyScenes.forEach((scene, index) => {
-    scene.classList.toggle("active", index === 0);
-  });
-});
-createEpisodes();
-
-const fullscreenButton = document.getElementById("fullscreenButton");
+// FULLSCREEN
 
 fullscreenButton.addEventListener("click", async () => {
   try {
     if (!document.fullscreenElement) {
-      await document.getElementById("playerPage").requestFullscreen();
+      await pages.player.requestFullscreen();
     } else {
       await document.exitFullscreen();
     }
@@ -276,3 +291,9 @@ document.addEventListener("fullscreenchange", () => {
     ? "⛶ Exit Fullscreen"
     : "⛶ Fullscreen";
 });
+
+// INITIALISE
+
+createEpisodes();
+resetStoryScenes();
+updatePlayButton();
