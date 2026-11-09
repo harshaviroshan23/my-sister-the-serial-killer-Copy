@@ -681,6 +681,196 @@ button {
     font-size: 38px;
   }
 
+  
+/* CINEMATIC STORY PLAYER */
+
+.story-stage {
+  position: relative;
+  width: 100%;
+  min-height: 490px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #080808;
+  border: 1px solid #333;
+  isolation: isolate;
+}
+
+.story-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 55px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease, visibility 1s;
+  overflow: hidden;
+}
+
+.story-scene.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scene-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  transition: transform 8s ease;
+}
+
+.story-scene.active .scene-atmosphere {
+  transform: scale(1.12);
+}
+
+.scene-one .scene-atmosphere {
+  background:
+    linear-gradient(90deg, #080808 5%, transparent 100%),
+    linear-gradient(0deg, #080808 0%, transparent 80%),
+    radial-gradient(ellipse at 75% 30%, #8b4c36, transparent 45%),
+    linear-gradient(135deg, #101923, #432b2a, #080808);
+}
+
+.scene-two .scene-atmosphere {
+  background:
+    radial-gradient(ellipse at 25% 40%, #a36a51, transparent 30%),
+    radial-gradient(ellipse at 75% 40%, #31516a, transparent 30%),
+    linear-gradient(120deg, #090909, #29202a, #080808);
+}
+
+.scene-three .scene-atmosphere {
+  background:
+    radial-gradient(ellipse at 70% 35%, #7d2828, transparent 35%),
+    linear-gradient(120deg, #080808, #292020, #080808);
+}
+
+.scene-four .scene-atmosphere {
+  background:
+    radial-gradient(ellipse at 50% 30%, #a16b36, transparent 35%),
+    linear-gradient(120deg, #101010, #30251b, #080808);
+}
+
+.scene-number {
+  color: #e50914;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  margin-bottom: 18px;
+}
+
+.scene-title {
+  max-width: 700px;
+  font-size: clamp(30px, 5vw, 58px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-shadow: 0 4px 20px #000;
+  animation: sceneTextIn 1s ease both;
+}
+
+.scene-description {
+  max-width: 550px;
+  color: #ddd;
+  font-size: 17px;
+  line-height: 1.7;
+  margin-top: 18px;
+  animation: sceneTextIn 1.3s ease both;
+}
+
+.scene-highlight {
+  color: #e50914;
+}
+
+.scene-decoration {
+  position: absolute;
+  top: 12%;
+  right: 10%;
+  width: 190px;
+  height: 260px;
+  border: 1px solid #ffffff25;
+  border-radius: 100px 100px 10px 10px;
+  opacity: 0.5;
+  transform: rotate(8deg);
+}
+
+.scene-decoration::before,
+.scene-decoration::after {
+  content: "";
+  position: absolute;
+  border: 1px solid #ffffff30;
+  border-radius: 50%;
+}
+
+.scene-decoration::before {
+  width: 120px;
+  height: 120px;
+  top: 30px;
+  left: 34px;
+}
+
+.scene-decoration::after {
+  width: 65px;
+  height: 65px;
+  bottom: 25px;
+  left: 62px;
+}
+
+@keyframes sceneTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.story-progress {
+  height: 4px;
+  width: 100%;
+  background: #ffffff30;
+  margin-top: 18px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.story-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--red);
+  transition: width 0.2s linear;
+}
+
+.player-controls button:hover {
+  background: var(--red);
+}
+
+@media (max-width: 600px) {
+  .story-stage {
+    min-height: 400px;
+  }
+
+  .story-scene {
+    padding: 25px;
+  }
+
+  .scene-title {
+    font-size: 32px;
+  }
+
+  .scene-description {
+    font-size: 14px;
+  }
+
+  .scene-decoration {
+    right: 5%;
+    width: 120px;
+    height: 170px;
+  }
+}
+
   .player-content {
     margin-top: 20px;
   }
