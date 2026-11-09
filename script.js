@@ -33,24 +33,67 @@ let introStarted = false;
 let activeSceneIndex = -1;
 
 const defaultEpisodes = [
-  { title: "The Story — Part 1", description: "Meet the sisters and enter their world." },
-  { title: "The Story — Part 2", description: "The story continues." },
-  { title: "The Story — Part 3", description: "Discover what happens next." },
-  { title: "The Climax", description: "The turning point of the story." },
-  { title: "How It Should Have Ended", description: "An alternative ending." },
-  { title: "My Feedback", description: "My personal thoughts about the book." },
-  { title: "The Team", description: "Meet the people behind this presentation." }
+  {
+    title: "The Story — Part 1",
+    description: "Meet the sisters and enter their world.",
+    audio: "assets/episode1.wav"
+  },
+  {
+    title: "The Story — Part 2",
+    description: "The story continues.",
+    audio: ""
+  },
+  {
+    title: "The Story — Part 3",
+    description: "Discover what happens next.",
+    audio: ""
+  },
+  {
+    title: "The Climax",
+    description: "The turning point of the story.",
+    audio: ""
+  },
+  {
+    title: "How It Should Have Ended",
+    description: "An alternative ending.",
+    audio: ""
+  },
+  {
+    title: "My Feedback",
+    description: "My personal thoughts about the book.",
+    audio: ""
+  },
+  {
+    title: "The Team",
+    description: "Meet the people behind this presentation.",
+    audio: ""
+  }
 ];
 
 function getEpisodes() {
-  return typeof episodes !== "undefined" ? episodes : defaultEpisodes;
+  return typeof episodes !== "undefined"
+    ? episodes
+    : defaultEpisodes;
 }
 
+
+// PAGE NAVIGATION
+
 function showPage(pageName) {
-  Object.values(pages).forEach(page => page.classList.add("hidden"));
+  Object.values(pages).forEach(page => {
+    page.classList.add("hidden");
+  });
+
   pages[pageName].classList.remove("hidden");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
+
+
+// AUDIO HELPERS
 
 function stopAudio(audio) {
   audio.pause();
@@ -64,8 +107,11 @@ function playAudio(audio) {
 }
 
 function updatePlayButton() {
-  playPauseButton.textContent = episodeAudio.paused ? "▶" : "❚❚";
+  playPauseButton.textContent = episodeAudio.paused
+    ? "▶"
+    : "❚❚";
 }
+
 
 // INTRO
 
@@ -73,6 +119,7 @@ async function startIntro() {
   if (introStarted) return;
 
   introStarted = true;
+
   startButton.style.display = "none";
   skipButton.style.display = "block";
 
@@ -83,25 +130,43 @@ async function startIntro() {
     await introVideo.play();
   } catch (error) {
     console.error("Intro playback failed:", error);
+
     startButton.style.display = "block";
+    skipButton.style.display = "block";
+
     introStarted = false;
   }
 }
 
 function enterWebsite() {
   introVideo.pause();
-  stopAudio(seriesAudio);
 
   intro.classList.add("hidden");
   app.classList.remove("hidden");
 
+  stopAudio(seriesAudio);
+  stopAudio(episodeAudio);
+
   showPage("home");
+
   playAudio(homeAudio);
 }
 
 startButton.addEventListener("click", startIntro);
+
 skipButton.addEventListener("click", enterWebsite);
+
 introVideo.addEventListener("ended", enterWebsite);
+
+
+// INTRO INITIALISATION
+
+intro.classList.remove("hidden");
+app.classList.add("hidden");
+
+startButton.style.display = "block";
+skipButton.style.display = "block";
+
 
 // NAVIGATION
 
@@ -117,6 +182,9 @@ document.querySelectorAll("[data-open-series]").forEach(button => {
 document.querySelectorAll("[data-go-home]").forEach(button => {
   button.addEventListener("click", () => {
     stopAudio(seriesAudio);
+    stopAudio(episodeAudio);
+    pauseAllSceneVideos();
+
     playAudio(homeAudio);
     showPage("home");
   });
@@ -139,10 +207,12 @@ document.querySelectorAll("[data-go-episodes]").forEach(button => {
   button.addEventListener("click", () => {
     stopAudio(episodeAudio);
     pauseAllSceneVideos();
+
     playAudio(homeAudio);
     showPage("episodes");
   });
 });
+
 
 // EPISODE CARDS
 
@@ -151,23 +221,31 @@ function createEpisodes() {
 
   getEpisodes().forEach((episode, index) => {
     const card = document.createElement("article");
+
     card.className = "episode-card";
 
     card.innerHTML = `
       <div class="episode-thumbnail">▶</div>
+
       <div class="episode-info">
         <div class="episode-number">
           EPISODE ${String(index + 1).padStart(2, "0")}
         </div>
+
         <h3>${episode.title}</h3>
+
         <p>${episode.description}</p>
       </div>
     `;
 
-    card.addEventListener("click", () => openEpisode(index));
+    card.addEventListener("click", () => {
+      openEpisode(index);
+    });
+
     episodeGrid.appendChild(card);
   });
 }
+
 
 // CINEMATIC VIDEO CONTROL
 
@@ -229,7 +307,10 @@ function resetStoryScenes() {
 }
 
 function updateStoryScenes() {
-  if (!Number.isFinite(episodeAudio.duration) || episodeAudio.duration <= 0) {
+  if (
+    !Number.isFinite(episodeAudio.duration) ||
+    episodeAudio.duration <= 0
+  ) {
     return;
   }
 
@@ -248,11 +329,13 @@ function updateStoryScenes() {
   storyProgressFill.style.width = `${progress * 100}%`;
 }
 
+
 // OPEN EPISODES
 
 function openEpisode(index) {
   stopAudio(homeAudio);
   stopAudio(episodeAudio);
+
   pauseAllSceneVideos();
 
   currentEpisode = index;
@@ -262,20 +345,29 @@ function openEpisode(index) {
   document.getElementById("playerEpisodeNumber").textContent =
     `EPISODE ${String(index + 1).padStart(2, "0")}`;
 
-  document.getElementById("playerTitle").textContent = episode.title;
-  document.getElementById("playerDescription").textContent = episode.description;
+  document.getElementById("playerTitle").textContent =
+    episode.title;
+
+  document.getElementById("playerDescription").textContent =
+    episode.description;
 
   resetStoryScenes();
+
   showPage("player");
 
   if (episode.audio) {
     episodeAudio.src = episode.audio;
     episodeAudio.load();
+
     playAudio(episodeAudio);
+  } else {
+    episodeAudio.removeAttribute("src");
+    episodeAudio.load();
   }
 
   updatePlayButton();
 }
+
 
 // AUDIO EVENTS
 
@@ -302,10 +394,14 @@ episodeAudio.addEventListener("pause", () => {
 
 episodeAudio.addEventListener("ended", () => {
   updatePlayButton();
+
   storyProgressFill.style.width = "100%";
+
   setActiveScene(storyScenes.length - 1);
+
   pauseAllSceneVideos();
 });
+
 
 // PLAYER CONTROLS
 
@@ -324,6 +420,7 @@ rewindButton.addEventListener("click", () => {
     0,
     episodeAudio.currentTime - 10
   );
+
   updateStoryScenes();
 });
 
@@ -333,9 +430,11 @@ forwardButton.addEventListener("click", () => {
       episodeAudio.duration,
       episodeAudio.currentTime + 10
     );
+
     updateStoryScenes();
   }
 });
+
 
 // FULLSCREEN
 
@@ -357,7 +456,8 @@ document.addEventListener("fullscreenchange", () => {
     : "⛶ Fullscreen";
 });
 
-// INITIALISE
+
+// INITIALISE WEBSITE
 
 createEpisodes();
 resetStoryScenes();
