@@ -25,6 +25,7 @@ const forwardButton = document.getElementById("forwardButton");
 const fullscreenButton = document.getElementById("fullscreenButton");
 
 const storyStage = document.getElementById("storyStage");
+const storyProgress = document.getElementById("storyProgress");
 const storyProgressFill = document.getElementById("storyProgressFill");
 
 const allStoryScenes = document.querySelectorAll(".story-scene");
@@ -33,6 +34,7 @@ const allSceneVideos = document.querySelectorAll(".scene-video");
 let currentEpisode = 0;
 let activeSceneIndex = -1;
 let introStarted = false;
+let isDraggingProgress = false;
 
 
 // EPISODE DATA
@@ -46,7 +48,7 @@ const defaultEpisodes = [
   {
     title: "The Story — Part 2",
     description: "The story continues.",
-    audio: ""
+    audio: "assets/episode2.wav"
   },
   {
     title: "The Story — Part 3",
@@ -341,10 +343,13 @@ function resetStoryScenes() {
   });
 
   storyProgressFill.style.width = "0%";
+  storyProgress.setAttribute("aria-valuenow", "0");
 
   setActiveScene(0);
 }
 
+
+// UPDATE SCENES AND PROGRESS
 
 function updateStoryScenes() {
   if (
@@ -359,7 +364,7 @@ function updateStoryScenes() {
   if (currentScenes.length === 0) return;
 
   const progress = Math.min(
-    episodeAudio.currentTime / episodeAudio.duration,
+    Math.max(episodeAudio.currentTime / episodeAudio.duration, 0),
     1
   );
 
@@ -371,7 +376,106 @@ function updateStoryScenes() {
   setActiveScene(activeScene);
 
   storyProgressFill.style.width = `${progress * 100}%`;
+
+  storyProgress.setAttribute(
+    "aria-valuenow",
+    String(Math.round(progress * 100))
+  );
 }
+
+
+// INTERACTIVE PROGRESS BAR
+
+function seekToPosition(clientX) {
+  if (
+    !Number.isFinite(episodeAudio.duration) ||
+    episodeAudio.duration <= 0 ||
+    !episodeAudio.src
+  ) {
+    return;
+  }
+
+  const rect = storyProgress.getBoundingClientRect();
+
+  const position = Math.min(
+    Math.max((clientX - rect.left) / rect.width, 0),
+    1
+  );
+
+  episodeAudio.currentTime = position * episodeAudio.duration;
+
+  updateStoryScenes();
+}
+
+
+// CLICK AND DRAG
+
+storyProgress.addEventListener("pointerdown", event => {
+  if (!episodeAudio.src || !Number.isFinite(episodeAudio.duration)) {
+    return;
+  }
+
+  isDraggingProgress = true;
+
+  storyProgress.setPointerCapture(event.pointerId);
+
+  seekToPosition(event.clientX);
+});
+
+storyProgress.addEventListener("pointermove", event => {
+  if (!isDraggingProgress) return;
+
+  seekToPosition(event.clientX);
+});
+
+storyProgress.addEventListener("pointerup", event => {
+  if (!isDraggingProgress) return;
+
+  seekToPosition(event.clientX);
+
+  isDraggingProgress = false;
+
+  if (storyProgress.hasPointerCapture(event.pointerId)) {
+    storyProgress.releasePointerCapture(event.pointerId);
+  }
+});
+
+storyProgress.addEventListener("pointercancel", () => {
+  isDraggingProgress = false;
+});
+
+
+// KEYBOARD SUPPORT
+
+storyProgress.addEventListener("keydown", event => {
+  if (!episodeAudio.src || !Number.isFinite(episodeAudio.duration)) {
+    return;
+  }
+
+  const duration = episodeAudio.duration;
+  let newTime = episodeAudio.currentTime;
+
+  if (event.key === "ArrowRight") {
+    newTime += 5;
+  } else if (event.key === "ArrowLeft") {
+    newTime -= 5;
+  } else if (event.key === "Home") {
+    newTime = 0;
+  } else if (event.key === "End") {
+    newTime = duration;
+  } else {
+    return;
+  }
+
+  event.preventDefault();
+
+  episodeAudio.currentTime = Math.max(
+    0,
+    Math.min(newTime, duration)
+  );
+
+  updateStoryScenes();
+});
 
 
 // OPEN EPISODES
@@ -420,6 +524,7 @@ episodeAudio.addEventListener("timeupdate", updateStoryScenes);
 
 episodeAudio.addEventListener("loadedmetadata", () => {
   resetStoryScenes();
+  updateStoryScenes();
 });
 
 episodeAudio.addEventListener("play", () => {
@@ -441,6 +546,7 @@ episodeAudio.addEventListener("ended", () => {
   updatePlayButton();
 
   storyProgressFill.style.width = "100%";
+  storyProgress.setAttribute("aria-valuenow", "100");
 
   const currentScenes = getCurrentScenes();
 
@@ -465,6 +571,8 @@ playPauseButton.addEventListener("click", () => {
 });
 
 rewindButton.addEventListener("click", () => {
+  if (!Number.isFinite(episodeAudio.duration)) return;
+
   episodeAudio.currentTime = Math.max(
     0,
     episodeAudio.currentTime - 10
@@ -474,14 +582,14 @@ rewindButton.addEventListener("click", () => {
 });
 
 forwardButton.addEventListener("click", () => {
-  if (Number.isFinite(episodeAudio.duration)) {
-    episodeAudio.currentTime = Math.min(
-      episodeAudio.duration,
-      episodeAudio.currentTime + 10
-    );
+  if (!Number.isFinite(episodeAudio.duration)) return;
 
-    updateStoryScenes();
-  }
+  episodeAudio.currentTime = Math.min(
+    episodeAudio.duration,
+    episodeAudio.currentTime + 10
+  );
+
+  updateStoryScenes();
 });
 
 
