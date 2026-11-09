@@ -15,6 +15,7 @@ const skipButton = document.getElementById("skipIntro");
 
 const homeAudio = document.getElementById("homeAudio");
 const seriesAudio = document.getElementById("seriesAudio");
+const episodeAudio = document.getElementById("episodeAudio");
 
 let currentEpisode = 0;
 let introStarted = false;
@@ -70,7 +71,6 @@ function enterWebsite() {
 
 startButton.addEventListener("click", startIntro);
 skipButton.addEventListener("click", enterWebsite);
-
 introVideo.addEventListener("ended", enterWebsite);
 
 // SERIES NAVIGATION
@@ -94,7 +94,8 @@ document.querySelectorAll("[data-go-home]").forEach(button => {
 
 document.querySelectorAll("[data-go-detail]").forEach(button => {
   button.addEventListener("click", () => {
-    playAudio(seriesAudio);
+    stopAudio(seriesAudio);
+    playAudio(homeAudio);
     showPage("detail");
   });
 });
@@ -107,6 +108,7 @@ document.getElementById("viewEpisodes")
 
 document.querySelectorAll("[data-go-episodes]").forEach(button => {
   button.addEventListener("click", () => {
+    stopAudio(episodeAudio);
     playAudio(homeAudio);
     showPage("episodes");
   });
@@ -123,7 +125,7 @@ const defaultEpisodes = [
   { title: "The Climax", description: "The turning point of the story." },
   { title: "How It Should Have Ended", description: "An alternative ending." },
   { title: "My Feedback", description: "My personal thoughts about the book." },
-  { title: "The Team", description: "Meet the people behind this presentation." }
+  { title: "The Team", description: "The people behind this presentation." }
 ];
 
 function getEpisodes() {
@@ -153,8 +155,12 @@ function createEpisodes() {
   });
 }
 
+// OPEN EPISODE AND PLAY NARRATION
+
 function openEpisode(index) {
   stopAudio(homeAudio);
+  stopAudio(episodeAudio);
+
   currentEpisode = index;
   const episode = getEpisodes()[index];
 
@@ -165,6 +171,54 @@ function openEpisode(index) {
   document.getElementById("playerDescription").textContent = episode.description;
 
   showPage("player");
+
+  if (episode.audio) {
+    episodeAudio.src = episode.audio;
+    episodeAudio.load();
+
+    playAudio(episodeAudio);
+  }
+
+  updatePlayButton();
 }
+
+// PLAYER CONTROLS
+
+const playPauseButton = document.getElementById("playPauseButton");
+const rewindButton = document.getElementById("rewindButton");
+const forwardButton = document.getElementById("forwardButton");
+
+function updatePlayButton() {
+  playPauseButton.textContent = episodeAudio.paused ? "▶" : "❚❚";
+}
+
+playPauseButton.addEventListener("click", () => {
+  if (!episodeAudio.src) return;
+
+  if (episodeAudio.paused) {
+    playAudio(episodeAudio);
+  } else {
+    episodeAudio.pause();
+  }
+
+  updatePlayButton();
+});
+
+rewindButton.addEventListener("click", () => {
+  episodeAudio.currentTime = Math.max(0, episodeAudio.currentTime - 10);
+});
+
+forwardButton.addEventListener("click", () => {
+  if (Number.isFinite(episodeAudio.duration)) {
+    episodeAudio.currentTime = Math.min(
+      episodeAudio.duration,
+      episodeAudio.currentTime + 10
+    );
+  }
+});
+
+episodeAudio.addEventListener("play", updatePlayButton);
+episodeAudio.addEventListener("pause", updatePlayButton);
+episodeAudio.addEventListener("ended", updatePlayButton);
 
 createEpisodes();
