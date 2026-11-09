@@ -8,7 +8,7 @@ const episodes = [
   {
     title: "The Story — Part 2",
     description: "The story continues.",
-    audio: ""
+    audio: "assets/episode2.wav"
   },
   {
     title: "The Story — Part 3",
