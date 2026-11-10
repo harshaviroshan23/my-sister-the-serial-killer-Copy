@@ -36,9 +36,7 @@ button {
   display: none !important;
 }
 
-/* ==========================================
-   INTRO SCREEN
-========================================== */
+/* INTRO SCREEN */
 
 .intro-screen {
   position: fixed;
@@ -109,9 +107,7 @@ button {
   z-index: 10;
 }
 
-/* ==========================================
-   NAVIGATION
-========================================== */
+/* NAVIGATION */
 
 .app {
   min-height: 100vh;
@@ -152,9 +148,7 @@ button {
   color: #ccc;
 }
 
-/* ==========================================
-   HOMEPAGE
-========================================== */
+/* HOMEPAGE */
 
 .home-page {
   min-height: 100vh;
@@ -239,9 +233,142 @@ button {
   letter-spacing: 2px;
 }
 
-/* ==========================================
-   DETAIL PAGE
-========================================== */
+/* HOMEPAGE CONTENT ROWS */
+
+.home-rows {
+  position: relative;
+  z-index: 3;
+  padding: 20px 4% 50px;
+  background: #090909;
+}
+
+.content-row {
+  margin-bottom: 38px;
+}
+
+.content-row h2 {
+  color: #fff;
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.movie-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 3px 18px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.movie-list::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  position: relative;
+  flex: 0 0 240px;
+  height: 135px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  isolation: isolate;
+  cursor: default;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #111;
+}
+
+.movie-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.3),
+    transparent 55%
+  );
+}
+
+.movie-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 0;
+  transition: transform 0.4s ease;
+}
+
+.movie-card:hover img {
+  transform: scale(1.02);
+}
+
+.movie-card span {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 5px #000;
+}
+
+.movie-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+  z-index: 5;
+}
+
+.book-thumbnail {
+  cursor: pointer;
+  appearance: none;
+}
+
+.book-thumbnail:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+
+/* POSTER BACKGROUNDS */
+
+.poster-one { background: linear-gradient(135deg, #172d52, #8b1d36, #090909); }
+.poster-two { background: linear-gradient(135deg, #172b37, #47718b, #101010); }
+.poster-three { background: linear-gradient(135deg, #19152e, #58345e, #080808); }
+.poster-four { background: linear-gradient(135deg, #8d2b32, #24151b, #080808); }
+.poster-five { background: linear-gradient(135deg, #122e3b, #315b5b, #080808); }
+.poster-six { background: linear-gradient(135deg, #8c1720, #351016, #080808); }
+.poster-seven { background: linear-gradient(135deg, #355a37, #17221c, #080808); }
+.poster-eight { background: linear-gradient(135deg, #643b70, #25172f, #080808); }
+.poster-nine { background: linear-gradient(135deg, #73322d, #231516, #080808); }
+.poster-ten { background: linear-gradient(135deg, #303030, #5b2020, #080808); }
+.poster-eleven { background: linear-gradient(135deg, #493c2e, #191919, #080808); }
+.poster-twelve { background: linear-gradient(135deg, #263e55, #18202d, #080808); }
+.poster-thirteen { background: linear-gradient(135deg, #4a2635, #21151d, #080808); }
+.poster-fourteen { background: linear-gradient(135deg, #732c2c, #241414, #080808); }
+.poster-fifteen { background: linear-gradient(135deg, #394c54, #172126, #080808); }
+.poster-sixteen {
+  background: linear-gradient(135deg, #8d1720, #4a1018, #090909);
+  border: 1px solid #e50914;
+}
+.poster-seventeen { background: linear-gradient(135deg, #273e59, #17202d, #080808); }
+.poster-eighteen { background: linear-gradient(135deg, #51375d, #21162c, #080808); }
+.poster-nineteen { background: linear-gradient(135deg, #71321d, #29130d, #080808); }
+.poster-twenty { background: linear-gradient(135deg, #343b52, #191c28, #080808); }
+.poster-twentyone { background: linear-gradient(135deg, #35534d, #17251f, #080808); }
+.poster-twentytwo { background: linear-gradient(135deg, #443d57, #1d1929, #080808); }
+.poster-twentythree { background: linear-gradient(135deg, #5c3030, #241515, #080808); }
+.poster-twentyfour { background: linear-gradient(135deg, #25485d, #14202a, #080808); }
+
+/* DETAIL PAGE */
 
 .detail-page {
   min-height: 100vh;
@@ -318,9 +445,7 @@ button {
   margin-bottom: 25px;
 }
 
-/* ==========================================
-   EPISODES PAGE
-========================================== */
+/* EPISODES PAGE */
 
 .episodes-page {
   min-height: 100vh;
@@ -398,9 +523,7 @@ button {
   margin-bottom: 8px;
 }
 
-/* ==========================================
-   PLAYER PAGE
-========================================== */
+/* PLAYER PAGE */
 
 .player-page {
   min-height: 100vh;
@@ -458,9 +581,7 @@ button {
   max-width: 750px;
 }
 
-/* ==========================================
-   CINEMATIC VIDEO FRAME
-========================================== */
+/* CINEMATIC VIDEO FRAME */
 
 .story-stage {
   position: relative;
@@ -630,19 +751,34 @@ button {
 /* PROGRESS BAR */
 
 .story-progress {
+  position: relative;
   width: 100%;
-  height: 4px;
-  background: #ffffff30;
-  margin-top: 12px;
-  border-radius: 10px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 20px 0;
   overflow: hidden;
+  touch-action: none;
+  transition: height 0.2s ease;
+}
+
+.story-progress:hover {
+  height: 11px;
 }
 
 .story-progress-fill {
-  height: 100%;
   width: 0%;
-  background: var(--red);
-  transition: width 0.2s linear;
+  height: 100%;
+  background: #e50914;
+  border-radius: 20px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.story-progress:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
 }
 
 /* PLAYER CONTROLS */
@@ -693,9 +829,7 @@ button {
   margin: 0 auto;
 }
 
-/* ==========================================
-   RESPONSIVE DESIGN
-========================================== */
+/* RESPONSIVE DESIGN */
 
 @media (max-width: 800px) {
   .nav-links {
@@ -804,219 +938,8 @@ button {
     padding: 13px 22px;
   }
 }
-/* INTERACTIVE NETFLIX-STYLE PROGRESS BAR */
 
-.story-progress {
-  position: relative;
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
-  cursor: pointer;
-  margin: 20px 0;
-  overflow: hidden;
-  touch-action: none;
-  transition: height 0.2s ease;
-}
-
-.story-progress:hover {
-  height: 11px;
-}
-
-.story-progress-fill {
-  width: 0%;
-  height: 100%;
-  background: #e50914;
-  border-radius: 20px;
-  pointer-events: none;
-  transition: width 0.1s linear;
-}
-
-.story-progress:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 4px;
-}
-
-/* =================================
-   NETFLIX HOMEPAGE CONTENT ROWS
-================================= */
-
-.home-rows {
-  position: relative;
-  z-index: 3;
-  padding: 20px 4% 50px;
-  background: #090909;
-}
-
-.content-row {
-  margin-bottom: 38px;
-}
-
-.content-row h2 {
-  color: #fff;
-  font-size: 21px;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.movie-list {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 8px 3px 18px;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-}
-
-.movie-list::-webkit-scrollbar {
-  display: none;
-}
-
-.movie-card {
-  position: relative;
-  flex: 0 0 190px;
-  height: 115px;
-  border-radius: 5px;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 12px;
-  isolation: isolate;
-  cursor: default;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #252525;
-}
-
-.movie-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.95),
-      rgba(0, 0, 0, 0.05)
-    );
-}
-
-.movie-card span {
-  color: white;
-  font-size: 15px;
-  font-weight: 900;
-  text-align: center;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 5px #000;
-}
-
-.movie-card:hover {
-  transform: scale(1.07);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-  z-index: 5;
-}
-
-/* POSTER BACKGROUNDS */
-
-.poster-one {
-  background: linear-gradient(135deg, #172d52, #8b1d36, #090909);
-}
-
-.poster-two {
-  background: linear-gradient(135deg, #172b37, #47718b, #101010);
-}
-
-.poster-three {
-  background: linear-gradient(135deg, #19152e, #58345e, #080808);
-}
-
-.poster-four {
-  background: linear-gradient(135deg, #8d2b32, #24151b, #080808);
-}
-
-.poster-five {
-  background: linear-gradient(135deg, #122e3b, #315b5b, #080808);
-}
-
-.poster-six {
-  background: linear-gradient(135deg, #8c1720, #351016, #080808);
-}
-
-.poster-seven {
-  background: linear-gradient(135deg, #355a37, #17221c, #080808);
-}
-
-.poster-eight {
-  background: linear-gradient(135deg, #643b70, #25172f, #080808);
-}
-
-.poster-nine {
-  background: linear-gradient(135deg, #73322d, #231516, #080808);
-}
-
-.poster-ten {
-  background: linear-gradient(135deg, #303030, #5b2020, #080808);
-}
-
-.poster-eleven {
-  background: linear-gradient(135deg, #493c2e, #191919, #080808);
-}
-
-.poster-twelve {
-  background: linear-gradient(135deg, #263e55, #18202d, #080808);
-}
-
-.poster-thirteen {
-  background: linear-gradient(135deg, #4a2635, #21151d, #080808);
-}
-
-.poster-fourteen {
-  background: linear-gradient(135deg, #732c2c, #241414, #080808);
-}
-
-.poster-fifteen {
-  background: linear-gradient(135deg, #394c54, #172126, #080808);
-}
-
-.poster-sixteen {
-  background: linear-gradient(135deg, #8d1720, #4a1018, #090909);
-  border: 1px solid #e50914;
-}
-
-.poster-seventeen {
-  background: linear-gradient(135deg, #273e59, #17202d, #080808);
-}
-
-.poster-eighteen {
-  background: linear-gradient(135deg, #51375d, #21162c, #080808);
-}
-
-.poster-nineteen {
-  background: linear-gradient(135deg, #71321d, #29130d, #080808);
-}
-
-.poster-twenty {
-  background: linear-gradient(135deg, #343b52, #191c28, #080808);
-}
-
-.poster-twentyone {
-  background: linear-gradient(135deg, #35534d, #17251f, #080808);
-}
-
-.poster-twentytwo {
-  background: linear-gradient(135deg, #443d57, #1d1929, #080808);
-}
-
-.poster-twentythree {
-  background: linear-gradient(135deg, #5c3030, #241515, #080808);
-}
-
-.poster-twentyfour {
-  background: linear-gradient(135deg, #25485d, #14202a, #080808);
-}
-
-/* HOMEPAGE RESPONSIVE DESIGN */
+/* HOMEPAGE ROW RESPONSIVE DESIGN */
 
 @media (max-width: 768px) {
   .home-rows {
@@ -1028,8 +951,8 @@ button {
   }
 
   .movie-card {
-    flex-basis: 145px;
-    height: 95px;
+    flex-basis: 190px;
+    height: 110px;
   }
 
   .movie-card span {
@@ -1039,7 +962,7 @@ button {
 
 @media (max-width: 480px) {
   .movie-card {
-    flex-basis: 125px;
-    height: 85px;
+    flex-basis: 155px;
+    height: 95px;
   }
 }
