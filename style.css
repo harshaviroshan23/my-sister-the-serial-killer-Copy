@@ -36,7 +36,9 @@ button {
   display: none !important;
 }
 
-/* INTRO SCREEN */
+/* ==========================================
+   INTRO SCREEN
+========================================== */
 
 .intro-screen {
   position: fixed;
@@ -107,7 +109,9 @@ button {
   z-index: 10;
 }
 
-/* NAVIGATION */
+/* ==========================================
+   NAVIGATION AND NOTFLIX LOGO
+========================================== */
 
 .app {
   min-height: 100vh;
@@ -124,10 +128,40 @@ button {
 }
 
 .brand {
-  color: var(--red);
-  font-size: 29px;
+  display: inline-flex;
+  align-items: center;
+  color: #e50914;
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 34px;
   font-weight: 900;
-  letter-spacing: -1.5px;
+  letter-spacing: -2px;
+  line-height: 1;
+  transform: scaleX(0.95);
+  transform-origin: left center;
+  text-shadow: 0 2px 8px rgba(229, 9, 20, 0.15);
+}
+
+.brand span {
+  display: inline-block;
+}
+
+.brand span:nth-child(1),
+.brand span:nth-child(7) {
+  transform: scaleY(1.12);
+}
+
+.brand span:nth-child(2),
+.brand span:nth-child(6) {
+  transform: scaleY(1.06);
+}
+
+.brand span:nth-child(3),
+.brand span:nth-child(5) {
+  transform: scaleY(0.96);
+}
+
+.brand span:nth-child(4) {
+  transform: scaleY(0.90);
 }
 
 .nav-links {
@@ -148,7 +182,9 @@ button {
   color: #ccc;
 }
 
-/* HOMEPAGE */
+/* ==========================================
+   HOMEPAGE
+========================================== */
 
 .home-page {
   min-height: 100vh;
@@ -233,7 +269,9 @@ button {
   letter-spacing: 2px;
 }
 
-/* HOMEPAGE CONTENT ROWS */
+/* ==========================================
+   HOMEPAGE CONTENT ROWS
+========================================== */
 
 .home-rows {
   position: relative;
@@ -355,10 +393,12 @@ button {
 .poster-thirteen { background: linear-gradient(135deg, #4a2635, #21151d, #080808); }
 .poster-fourteen { background: linear-gradient(135deg, #732c2c, #241414, #080808); }
 .poster-fifteen { background: linear-gradient(135deg, #394c54, #172126, #080808); }
+
 .poster-sixteen {
   background: linear-gradient(135deg, #8d1720, #4a1018, #090909);
   border: 1px solid #e50914;
 }
+
 .poster-seventeen { background: linear-gradient(135deg, #273e59, #17202d, #080808); }
 .poster-eighteen { background: linear-gradient(135deg, #51375d, #21162c, #080808); }
 .poster-nineteen { background: linear-gradient(135deg, #71321d, #29130d, #080808); }
@@ -368,7 +408,9 @@ button {
 .poster-twentythree { background: linear-gradient(135deg, #5c3030, #241515, #080808); }
 .poster-twentyfour { background: linear-gradient(135deg, #25485d, #14202a, #080808); }
 
-/* DETAIL PAGE */
+/* ==========================================
+   DETAIL PAGE
+========================================== */
 
 .detail-page {
   min-height: 100vh;
@@ -445,7 +487,9 @@ button {
   margin-bottom: 25px;
 }
 
-/* EPISODES PAGE */
+/* ==========================================
+   EPISODES PAGE
+========================================== */
 
 .episodes-page {
   min-height: 100vh;
@@ -523,7 +567,9 @@ button {
   margin-bottom: 8px;
 }
 
-/* PLAYER PAGE */
+/* ==========================================
+   PLAYER PAGE
+========================================== */
 
 .player-page {
   min-height: 100vh;
@@ -581,7 +627,9 @@ button {
   max-width: 750px;
 }
 
-/* CINEMATIC VIDEO FRAME */
+/* ==========================================
+   CINEMATIC VIDEO FRAME
+========================================== */
 
 .story-stage {
   position: relative;
@@ -748,7 +796,9 @@ button {
   }
 }
 
-/* PROGRESS BAR */
+/* ==========================================
+   INTERACTIVE PROGRESS BAR
+========================================== */
 
 .story-progress {
   position: relative;
@@ -829,7 +879,9 @@ button {
   margin: 0 auto;
 }
 
-/* RESPONSIVE DESIGN */
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
 
 @media (max-width: 800px) {
   .nav-links {
@@ -855,6 +907,25 @@ button {
 
   .episode-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .home-rows {
+    padding: 15px 4% 35px;
+  }
+
+  .content-row h2 {
+    font-size: 18px;
+  }
+
+  .movie-card {
+    flex-basis: 190px;
+    height: 110px;
+  }
+
+  .movie-card span {
+    font-size: 12px;
   }
 }
 
@@ -936,27 +1007,6 @@ button {
   .start-experience {
     font-size: 14px;
     padding: 13px 22px;
-  }
-}
-
-/* HOMEPAGE ROW RESPONSIVE DESIGN */
-
-@media (max-width: 768px) {
-  .home-rows {
-    padding: 15px 4% 35px;
-  }
-
-  .content-row h2 {
-    font-size: 18px;
-  }
-
-  .movie-card {
-    flex-basis: 190px;
-    height: 110px;
-  }
-
-  .movie-card span {
-    font-size: 12px;
   }
 }
 
