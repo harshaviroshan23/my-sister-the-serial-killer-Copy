@@ -36,6 +36,146 @@ let activeSceneIndex = -1;
 let introStarted = false;
 let isDraggingProgress = false;
 
+let subtitleTrackElement = null;
+let subtitleTextTrack = null;
+let subtitlesEnabled = true;
+
+
+// SUBTITLE DISPLAY
+
+storyStage.style.position = "relative";
+
+const subtitleDisplay = document.createElement("div");
+subtitleDisplay.id = "subtitleDisplay";
+
+Object.assign(subtitleDisplay.style, {
+  position: "absolute",
+  bottom: "9%",
+  left: "5%",
+  right: "5%",
+  zIndex: "50",
+  color: "#ffffff",
+  fontSize: "clamp(14px, 2vw, 22px)",
+  fontWeight: "600",
+  textAlign: "center",
+  lineHeight: "1.5",
+  textShadow: "2px 2px 5px #000000, -2px -2px 5px #000000",
+  background: "rgba(0, 0, 0, 0.55)",
+  padding: "8px 14px",
+  borderRadius: "5px",
+  pointerEvents: "none",
+  display: "none"
+});
+
+storyStage.appendChild(subtitleDisplay);
+
+
+// SUBTITLE BUTTON
+
+const subtitleToggleButton = document.createElement("button");
+
+subtitleToggleButton.id = "subtitleToggleButton";
+subtitleToggleButton.textContent = "CC ON";
+
+Object.assign(subtitleToggleButton.style, {
+  position: "absolute",
+  top: "16px",
+  right: "16px",
+  zIndex: "60",
+  padding: "9px 15px",
+  background: "rgba(0, 0, 0, 0.8)",
+  color: "#ffffff",
+  border: "1px solid rgba(255,255,255,0.6)",
+  borderRadius: "5px",
+  fontSize: "13px",
+  fontWeight: "700",
+  cursor: "pointer",
+  display: "none"
+});
+
+storyStage.appendChild(subtitleToggleButton);
+
+
+function renderSubtitleCue() {
+  if (!subtitlesEnabled || !subtitleTextTrack) {
+    subtitleDisplay.style.display = "none";
+    return;
+  }
+
+  const activeCues = subtitleTextTrack.activeCues;
+
+  if (!activeCues || activeCues.length === 0) {
+    subtitleDisplay.textContent = "";
+    subtitleDisplay.style.display = "none";
+    return;
+  }
+
+  subtitleDisplay.textContent = activeCues[0].text;
+  subtitleDisplay.style.display = "block";
+}
+
+
+function setupSubtitles(index) {
+  // Remove the previous subtitle track.
+  if (subtitleTrackElement) {
+    subtitleTrackElement.remove();
+    subtitleTrackElement = null;
+    subtitleTextTrack = null;
+  }
+
+  subtitleDisplay.textContent = "";
+  subtitleDisplay.style.display = "none";
+
+  // Subtitles are currently available for Episode 3 only.
+  if (index !== 2) {
+    subtitleToggleButton.style.display = "none";
+    return;
+  }
+
+  subtitlesEnabled = true;
+
+  subtitleToggleButton.textContent = "CC ON";
+  subtitleToggleButton.style.display = "block";
+
+  subtitleTrackElement = document.createElement("track");
+
+  subtitleTrackElement.kind = "captions";
+  subtitleTrackElement.label = "English";
+  subtitleTrackElement.srclang = "en";
+  subtitleTrackElement.src = "assets/episode3.vtt";
+
+  subtitleTrackElement.addEventListener("load", () => {
+    if (subtitleTrackElement && subtitleTrackElement.track) {
+      subtitleTextTrack = subtitleTrackElement.track;
+      subtitleTextTrack.mode = "hidden";
+
+      renderSubtitleCue();
+    }
+  });
+
+  subtitleTrackElement.addEventListener("error", () => {
+    console.error("Could not load Episode 3 subtitles.");
+  });
+
+  episodeAudio.appendChild(subtitleTrackElement);
+
+  subtitleTextTrack = subtitleTrackElement.track;
+  subtitleTextTrack.mode = "hidden";
+
+  subtitleTextTrack.oncuechange = renderSubtitleCue;
+}
+
+
+subtitleToggleButton.addEventListener("click", () => {
+  subtitlesEnabled = !subtitlesEnabled;
+
+  subtitleToggleButton.textContent = subtitlesEnabled
+    ? "CC ON"
+    : "CC OFF";
+
+  renderSubtitleCue();
+});
+
 
 // EPISODE DATA
 
@@ -53,7 +193,7 @@ const defaultEpisodes = [
   {
     title: "The Story — Part 3",
     description: "Discover what happens next.",
-    audio: ""
+    audio: "assets/episode3.wav"
   },
   {
     title: "The Climax",
@@ -499,6 +639,8 @@ function openEpisode(index) {
 
   document.getElementById("playerDescription").textContent =
     episode.description;
+
+  setupSubtitles(index);
 
   resetStoryScenes();
 
