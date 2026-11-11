@@ -41,16 +41,349 @@ let subtitleTextTrack = null;
 let subtitlesEnabled = true;
 
 
-// SUBTITLE DISPLAY
+// PLAYER BAR DESIGN
 
 storyStage.style.position = "relative";
+
+const playerBarStyles = document.createElement("style");
+
+playerBarStyles.textContent = `
+  .story-stage {
+    position: relative;
+  }
+
+  .player-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 30px 22px 14px;
+    box-sizing: border-box;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.96),
+      rgba(0, 0, 0, 0.72) 65%,
+      transparent
+    );
+    opacity: 1;
+    transition: opacity 0.25s ease;
+  }
+
+  .player-bottom-bar .story-progress {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    margin: 0 0 13px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    overflow: visible;
+    touch-action: none;
+  }
+
+  .player-bottom-bar .story-progress:hover {
+    height: 6px;
+  }
+
+  .player-bottom-bar .story-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #e50914;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .player-bottom-bar .story-progress-fill::after {
+    content: "";
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e50914;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .player-bottom-bar .story-progress:hover .story-progress-fill::after,
+  .player-bottom-bar .story-progress:active .story-progress-fill::after {
+    opacity: 1;
+  }
+
+  .player-control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .player-controls-left,
+  .player-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .player-bottom-bar .player-controls {
+    display: contents;
+  }
+
+  .player-bottom-bar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    min-height: 34px;
+    padding: 5px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .player-bottom-bar button:hover {
+    color: #e50914;
+    transform: scale(1.08);
+  }
+
+  .player-bottom-bar #playPauseButton {
+    font-size: 23px;
+  }
+
+  .player-bottom-bar #rewindButton,
+  .player-bottom-bar #forwardButton {
+    font-size: 15px;
+  }
+
+  .player-volume-control {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: white;
+  }
+
+  .player-volume-control input {
+    width: 75px;
+    height: 4px;
+    accent-color: #e50914;
+    cursor: pointer;
+  }
+
+  .player-time {
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    white-space: nowrap;
+    font-family: Arial, sans-serif;
+  }
+
+  .player-bottom-bar #subtitleToggleButton {
+    position: static !important;
+    display: inline-flex;
+    min-width: 38px;
+    padding: 6px 9px;
+    border: 1px solid rgba(255,255,255,0.65);
+    border-radius: 3px;
+    background: transparent;
+    color: white;
+    font-size: 12px;
+  }
+
+  .player-bottom-bar #subtitleToggleButton:hover {
+    border-color: #e50914;
+  }
+
+  .player-bottom-bar #fullscreenButton {
+    font-size: 22px;
+  }
+
+  .player-bottom-bar .player-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    .player-bottom-bar {
+      padding: 22px 12px 9px;
+    }
+
+    .player-controls-left,
+    .player-controls-right {
+      gap: 8px;
+    }
+
+    .player-volume-control input {
+      width: 48px;
+    }
+
+    .player-time {
+      font-size: 10px;
+    }
+
+    .player-bottom-bar button {
+      min-width: 28px;
+      min-height: 30px;
+      font-size: 15px;
+    }
+  }
+
+  .story-stage:fullscreen {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    background: #000;
+  }
+
+  .story-stage:fullscreen .player-bottom-bar {
+    padding: 35px 35px 20px;
+  }
+`;
+
+document.head.appendChild(playerBarStyles);
+
+
+// BUILD BOTTOM BAR
+
+const playerBottomBar = document.createElement("div");
+playerBottomBar.className = "player-bottom-bar";
+
+const controlRow = document.createElement("div");
+controlRow.className = "player-control-row";
+
+const leftControls = document.createElement("div");
+leftControls.className = "player-controls-left";
+
+const rightControls = document.createElement("div");
+rightControls.className = "player-controls-right";
+
+const originalControls = document.querySelector(".player-controls");
+
+// Move the existing controls into the new bottom bar.
+if (originalControls) {
+  leftControls.appendChild(rewindButton);
+  leftControls.appendChild(playPauseButton);
+  leftControls.appendChild(forwardButton);
+  rightControls.appendChild(fullscreenButton);
+  originalControls.remove();
+}
+
+// Volume control
+const volumeControl = document.createElement("div");
+volumeControl.className = "player-volume-control";
+
+const volumeIcon = document.createElement("span");
+volumeIcon.textContent = "🔊";
+volumeIcon.style.fontSize = "16px";
+
+const volumeSlider = document.createElement("input");
+volumeSlider.type = "range";
+volumeSlider.min = "0";
+volumeSlider.max = "1";
+volumeSlider.step = "0.05";
+volumeSlider.value = String(episodeAudio.volume);
+volumeSlider.setAttribute("aria-label", "Volume");
+
+volumeControl.appendChild(volumeIcon);
+volumeControl.appendChild(volumeSlider);
+
+// Timestamp
+const timeDisplay = document.createElement("span");
+timeDisplay.className = "player-time";
+timeDisplay.textContent = "00:00 / 00:00";
+
+leftControls.appendChild(volumeControl);
+leftControls.appendChild(timeDisplay);
+
+// Put the progress bar above the controls.
+controlRow.appendChild(leftControls);
+controlRow.appendChild(rightControls);
+
+playerBottomBar.appendChild(storyProgress);
+playerBottomBar.appendChild(controlRow);
+
+storyStage.appendChild(playerBottomBar);
+
+// Keep the old controls container out of the layout.
+if (originalControls) {
+  originalControls.style.display = "none";
+}
+
+
+// TIME FORMAT
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    seconds = 0;
+  }
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+
+  return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
+function updateTimeDisplay() {
+  const current = formatTime(episodeAudio.currentTime);
+  const duration = formatTime(episodeAudio.duration);
+
+  timeDisplay.textContent = `${current} / ${duration}`;
+}
+
+
+// VOLUME CONTROL
+
+volumeSlider.addEventListener("input", () => {
+  episodeAudio.volume = Number(volumeSlider.value);
+
+  if (episodeAudio.volume === 0) {
+    volumeIcon.textContent = "🔇";
+  } else if (episodeAudio.volume < 0.5) {
+    volumeIcon.textContent = "🔉";
+  } else {
+    volumeIcon.textContent = "🔊";
+  }
+});
+
+volumeIcon.style.cursor = "pointer";
+
+volumeIcon.addEventListener("click", () => {
+  if (episodeAudio.volume > 0) {
+    episodeAudio.dataset.previousVolume = episodeAudio.volume;
+    episodeAudio.volume = 0;
+  } else {
+    episodeAudio.volume = Number(
+      episodeAudio.dataset.previousVolume || 1
+    );
+  }
+
+  volumeSlider.value = String(episodeAudio.volume);
+
+  volumeIcon.textContent = episodeAudio.volume === 0
+    ? "🔇"
+    : episodeAudio.volume < 0.5
+      ? "🔉"
+      : "🔊";
+});
+
+
+// SUBTITLE DISPLAY
 
 const subtitleDisplay = document.createElement("div");
 subtitleDisplay.id = "subtitleDisplay";
 
 Object.assign(subtitleDisplay.style, {
   position: "absolute",
-  bottom: "9%",
+  bottom: "13%",
   left: "5%",
   right: "5%",
   zIndex: "50",
@@ -76,24 +409,12 @@ const subtitleToggleButton = document.createElement("button");
 
 subtitleToggleButton.id = "subtitleToggleButton";
 subtitleToggleButton.textContent = "CC ON";
+subtitleToggleButton.title = "Toggle subtitles";
 
-Object.assign(subtitleToggleButton.style, {
-  position: "absolute",
-  top: "16px",
-  right: "16px",
-  zIndex: "60",
-  padding: "9px 15px",
-  background: "rgba(0, 0, 0, 0.8)",
-  color: "#ffffff",
-  border: "1px solid rgba(255,255,255,0.6)",
-  borderRadius: "5px",
-  fontSize: "13px",
-  fontWeight: "700",
-  cursor: "pointer",
-  display: "none"
-});
-
-storyStage.appendChild(subtitleToggleButton);
+rightControls.insertBefore(
+  subtitleToggleButton,
+  fullscreenButton
+);
 
 
 function renderSubtitleCue() {
@@ -125,7 +446,6 @@ function setupSubtitles(index) {
   subtitleDisplay.textContent = "";
   subtitleDisplay.style.display = "none";
 
-  // Subtitles are currently available for Episode 3 only.
   if (index !== 2) {
     subtitleToggleButton.style.display = "none";
     return;
@@ -134,7 +454,7 @@ function setupSubtitles(index) {
   subtitlesEnabled = true;
 
   subtitleToggleButton.textContent = "CC ON";
-  subtitleToggleButton.style.display = "block";
+  subtitleToggleButton.style.display = "inline-flex";
 
   subtitleTrackElement = document.createElement("track");
 
@@ -271,6 +591,10 @@ function updatePlayButton() {
   playPauseButton.textContent = episodeAudio.paused
     ? "▶"
     : "❚❚";
+
+  playPauseButton.title = episodeAudio.paused
+    ? "Play"
+    : "Pause";
 }
 
 
@@ -460,7 +784,6 @@ function setActiveScene(index) {
     }
   });
 
-  // Stop videos belonging to other episodes.
   allStoryScenes.forEach(scene => {
     if (scene.dataset.episode !== String(currentEpisode + 1)) {
       const video = scene.querySelector(".scene-video");
@@ -495,6 +818,7 @@ function updateStoryScenes() {
     !Number.isFinite(episodeAudio.duration) ||
     episodeAudio.duration <= 0
   ) {
+    updateTimeDisplay();
     return;
   }
 
@@ -520,6 +844,8 @@ function updateStoryScenes() {
     "aria-valuenow",
     String(Math.round(progress * 100))
   );
+
+  updateTimeDisplay();
 }
 
 
@@ -653,9 +979,12 @@ function openEpisode(index) {
   } else {
     episodeAudio.removeAttribute("src");
     episodeAudio.load();
+
+    storyProgressFill.style.width = "0%";
   }
 
   updatePlayButton();
+  updateTimeDisplay();
 }
 
 
@@ -667,6 +996,8 @@ episodeAudio.addEventListener("loadedmetadata", () => {
   resetStoryScenes();
   updateStoryScenes();
 });
+
+episodeAudio.addEventListener("durationchange", updateTimeDisplay);
 
 episodeAudio.addEventListener("play", () => {
   updatePlayButton();
@@ -696,6 +1027,7 @@ episodeAudio.addEventListener("ended", () => {
   }
 
   pauseAllSceneVideos();
+  updateTimeDisplay();
 });
 
 
@@ -750,8 +1082,12 @@ fullscreenButton.addEventListener("click", async () => {
 
 document.addEventListener("fullscreenchange", () => {
   fullscreenButton.textContent = document.fullscreenElement
-    ? "⛶ Exit Fullscreen"
-    : "⛶ Fullscreen";
+    ? "⛶"
+    : "⛶";
+
+  fullscreenButton.title = document.fullscreenElement
+    ? "Exit fullscreen"
+    : "Fullscreen";
 });
 
 
@@ -760,3 +1096,4 @@ document.addEventListener("fullscreenchange", () => {
 createEpisodes();
 resetStoryScenes();
 updatePlayButton();
+updateTimeDisplay();
