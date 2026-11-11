@@ -116,7 +116,6 @@ function renderSubtitleCue() {
 
 
 function setupSubtitles(index) {
-  // Remove the previous subtitle track.
   if (subtitleTrackElement) {
     subtitleTrackElement.remove();
     subtitleTrackElement = null;
@@ -735,12 +734,12 @@ forwardButton.addEventListener("click", () => {
 });
 
 
-// FULLSCREEN
+// VIDEO-ONLY FULLSCREEN
 
 fullscreenButton.addEventListener("click", async () => {
   try {
     if (!document.fullscreenElement) {
-      await pages.player.requestFullscreen();
+      await storyStage.requestFullscreen();
     } else {
       await document.exitFullscreen();
     }
